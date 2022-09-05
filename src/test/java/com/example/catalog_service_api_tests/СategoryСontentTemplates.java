@@ -1,26 +1,32 @@
 package com.example.catalog_service_api_tests;
 
+
 import io.restassured.RestAssured;
+import io.restassured.response.ResponseBody;
 import io.restassured.specification.RequestSpecification;
+import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.hamcrest.core.Is.is;
 
+public class СategoryСontentTemplates {
 
-public class Offers {
     @BeforeAll
     public static void setup(){
         RestAssured.baseURI="https://test4.jmart.kz/";
     }
     @Test
     @Order(1)
-    @DisplayName("Returns the list of offers by product id")
-    public void getListOfOffersByProductId(){
+    @DisplayName("Get token")
+    public void getToken(){
         RequestSpecification requestSpecification = RestAssured.given();
-        requestSpecification.given().get("gw/catalog/v1/products/offers/1").then().assertThat().body("success", is(true));
+        JSONObject request = new JSONObject();
+        request.put("login", "dev_test_admin@email.com");
+        request.put("password", "Test_4dmin_Jmart");
+        ResponseBody responseBody = requestSpecification.given().body(request).post("user/v1/auth/sign-in");
     }
+
 }
