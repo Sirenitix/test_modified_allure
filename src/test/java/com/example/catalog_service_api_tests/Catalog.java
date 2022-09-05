@@ -1,8 +1,6 @@
 package com.example.catalog_service_api_tests;
 
-import io.restassured.http.Headers;
 import io.restassured.response.ResponseBody;
-import net.minidev.json.JSONObject;
 import org.testng.Assert;
 import io.restassured.RestAssured;
 import io.restassured.http.Method;
@@ -11,7 +9,7 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.*;
 
-class catalog {
+class Catalog {
 
     @Test
     public void catalog_v1_categories_by_ids(){
