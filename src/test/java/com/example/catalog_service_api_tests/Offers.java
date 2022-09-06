@@ -35,4 +35,11 @@ public class Offers {
         System.out.println(response.asString());
         Assert.assertEquals(response.getStatusCode(), 404);
     }
+    @Test
+    @Order(3)
+    @DisplayName("Returns the list of offers by nothing")
+    public void getListOfOffersByNothing(){
+        RequestSpecification requestSpecification = RestAssured.given();
+        requestSpecification.given().get("gw/catalog/v1/products/offers").then().assertThat().body("success", is(false));
+    }
 }
