@@ -7,11 +7,13 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "catalog")
 @Configuration("catalogProperties")
 @Data
-public class Credentials {
+public class Configurations {
 
     private String login;
 
     private String password;
+
+    private String baseUri;
 
 
 }
