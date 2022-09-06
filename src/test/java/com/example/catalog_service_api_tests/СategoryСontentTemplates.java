@@ -58,7 +58,7 @@ public class СategoryСontentTemplates {
         given()
                 .when()
                 .spec(requestSpecification)
-                .get(configurations.getFeatureHandbook())
+                .get(configurations.getFeatureHandbookUri())
                 .then()
                 .assertThat()
                 .statusCode(200);
