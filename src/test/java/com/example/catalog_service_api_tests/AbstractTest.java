@@ -19,6 +19,7 @@ public abstract class AbstractTest {
     @Autowired
     private Configurations configurations;
     static RequestSpecification requestSpecification;
+    String wrongParameter = "@#@&*";
 
 
     @BeforeEach

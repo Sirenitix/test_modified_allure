@@ -19,5 +19,7 @@ public class Configurations {
 
     private String signIn;
 
+    private String featureHandbookWithParamPath;
+
 
 }
