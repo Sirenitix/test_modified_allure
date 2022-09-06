@@ -21,5 +21,7 @@ public class Configurations {
 
     private String featureHandbookWithParamPath;
 
+    private String featureHandbookWithLimitPath;
+
 
 }
