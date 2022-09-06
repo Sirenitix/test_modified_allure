@@ -16,7 +16,7 @@ import static org.hamcrest.core.Is.is;
 public class Catalog {
 }
 
-class catalog_v1_categories_by_ids {
+class Catalog_v1_categories_by_ids {
     @BeforeAll
     public static void setup(){
         RestAssured.baseURI = "https://test4.jmart.kz/catalog/v1/categories/categories_list";
@@ -52,7 +52,7 @@ class catalog_v1_categories_by_ids {
     }
 }
 
-class catalog_v1_categories_categories_list {
+class Catalog_v1_categories_categories_list {
     @BeforeAll
     public static void setup(){
         RestAssured.baseURI = "https://test4.jmart.kz/catalog/v1/categories/categories_list";
@@ -88,7 +88,7 @@ class catalog_v1_categories_categories_list {
     }
 }
 
-class catalog_v1_categories_get_two_top_levels {
+class Catalog_v1_categories_get_two_top_levels {
     @BeforeAll
     public static void setup(){
         RestAssured.baseURI = "https://test4.jmart.kz/catalog/v1/categories/get_two_top_levels";
@@ -124,7 +124,7 @@ class catalog_v1_categories_get_two_top_levels {
     }
 }
 
-class catalog_v1_categories_ordered_by_levels {
+class Catalog_v1_categories_ordered_by_levels {
     @BeforeAll
     public static void setup(){
         RestAssured.baseURI = "https://test4.jmart.kz/catalog/v1/categories/ordered_by_levels";
@@ -157,5 +157,50 @@ class catalog_v1_categories_ordered_by_levels {
     public void incorrectParameter(){
         int statusCode = RestAssured.given().request(Method.GET, "/blablab-la").getStatusCode();
         Assert.assertEquals(statusCode, 400);
+    }
+}
+
+class Catalog_v1_products_by_ids_full {
+    @BeforeAll
+    public static void setup(){
+        RestAssured.baseURI = "https://test4.jmart.kz/catalog/v1/products/by_ids/full";
+    }
+    @Test
+    @Order(1)
+    @DisplayName("Asserts that the list of categories is not empty.")
+    public void notEmptyList(){
+        ResponseBody responseBody = RestAssured.given().request(Method.GET).getBody();
+        Assert.assertNotNull(responseBody, "Result: Response is not empty");
+    }
+    @Test
+    @Order(2)
+    @DisplayName("Asserts that the list of products has pagination.")
+    public void thereIsAPagination(){
+        ResponseBody responseBody = RestAssured.given().request(Method.GET).getBody();
+        Assert.assertTrue(responseBody.asString().contains("page="));
+    }
+    @Test
+    @Order(3)
+    @DisplayName("Asserts that the list of categories has a limit.")
+    public void thereIsALimit(){
+        ResponseBody responseBody = RestAssured.given().request(Method.GET).getBody();
+        Assert.assertTrue(responseBody.asString().contains("per_page"));
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("Asserts that the status code is 400 when passed the incorrect parameter")
+    public void incorrectParameter(){
+        int statusCode = RestAssured.given().request(Method.GET, "/blablab-la").getStatusCode();
+        Assert.assertEquals(statusCode, 400);
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("Asserts that the list of categories is not empty.")
+    public void validIdCheckResponseData(){
+        ResponseBody responseBody = RestAssured.given().request(Method.GET, "1244667/P").getBody();
+        System.out.println(responseBody.asString());
+//        Assert.assertNotNull(responseBody, "Result: Response is not empty");
     }
 }
