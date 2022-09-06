@@ -19,7 +19,6 @@ import static io.restassured.RestAssured.given;
 @SpringBootTest
 public class СategoryСontentTemplates {
 
-
     @Autowired
     private Configurations configurations;
 
@@ -33,7 +32,7 @@ public class СategoryСontentTemplates {
                 .log()
                 .all()
                 .params("login", configurations.getLogin(), "password", configurations.getPassword())
-                .post("https://test4.jmart.kz/gw/user/v1/auth/sign-in")
+                .post(configurations.getSignIn())
                 .then()
                 .log()
                 .body()
@@ -58,7 +57,7 @@ public class СategoryСontentTemplates {
         given()
                 .when()
                 .spec(requestSpecification)
-                .get(configurations.getFeatureHandbook())
+                .get(configurations.getFeatureHandbookPath())
                 .then()
                 .assertThat()
                 .statusCode(200);
