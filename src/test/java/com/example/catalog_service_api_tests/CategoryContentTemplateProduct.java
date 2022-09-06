@@ -4,25 +4,18 @@ import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import lombok.extern.java.Log;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.*;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.Is.is;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 
 @Slf4j
 public class CategoryContentTemplateProduct {
     private static RequestSpecification requestSpecification;
-    @Before
+    @BeforeEach
     public void setup() {
-        RestAssured.baseURI = "https://test4.jmart.kz/gw/catalog/v1/my/vendor-product-import";
+        RestAssured.baseURI = "https://test4.jmart.kz/";
         Response response = given()
                 .log()
                 .all()
@@ -46,14 +39,178 @@ public class CategoryContentTemplateProduct {
     @Test
     @Order(1)
     @DisplayName("Returns the list of products uploaded by template")
-    public void getListOfOffersByProductId(){
-        RequestSpecification requestSpecification = RestAssured.given()
-                .auth().preemptive()
-                .basic("dev_test_admin@email.com", "Test_4dmin_Jmart");
-
-        requestSpecification.given()
-                .get("  gw/catalog/v1/category-content-template-product?name=a&company_id=1&status=1")
-                .then().assertThat()
+    public void getListOfProductsUploadedByTemplate(){
+        given()
+                .when()
+                .spec(requestSpecification)
+                .get("https://test4.jmart.kz/gw/catalog/v1/category-content-template-product?name=a&company_id=1&status=1")
+                .then()
+                .assertThat()
                 .body("success", is(true));
+    }
+    @Test
+    @Order(2)
+    @DisplayName("Returns the list of products uploaded by template with non valid Id and non valid status")
+    public void getListOfProductsUploadedByTemplateByNonValidCompanyIdAndStatus(){
+        given()
+                .when()
+                .spec(requestSpecification)
+                .get("https://test4.jmart.kz/gw/catalog/v1/category-content-template-product?name=a&company_id=awdaw&status=awdawd")
+                .then()
+                .assertThat()
+                .body("success", is(false));
+    }
+    @Test
+    @Order(3)
+    @DisplayName("Returns the list of products uploaded by template with non exist Id and non exist status")
+    public void getListOfProductsUploadedByTemplateByNonExistCompanyIdAndStatus(){
+        given()
+                .when()
+                .spec(requestSpecification)
+                .get("https://test4.jmart.kz/gw/catalog/v1/category-content-template-product?name=awdawdawdawd&company_id=awdawdawdawdawd&status=1")
+                .then()
+                .assertThat()
+                .body("success", is(false));
+    }
+    @Test
+    @Order(4)
+    @DisplayName("Returns the product uploaded by template by ID")
+    public void getProductUploadedByTemplateByID(){
+        given()
+                .when()
+                .spec(requestSpecification)
+                .get("https://test4.jmart.kz/gw/catalog/v1/category-content-template-product/12311")
+                .then()
+                .assertThat()
+                .body("success", is(true));
+        System.out.println("Should be tested with real IDs");
+    }
+    @Test
+    @Order(5)
+    @DisplayName("Returns the product uploaded by template by Non valid ID")
+    public void getProductUploadedByTemplateByNonValidID(){
+        given()
+                .when()
+                .spec(requestSpecification)
+                .get("https://test4.jmart.kz/gw/catalog/v1/category-content-template-product/awdawdawd")
+                .then()
+                .assertThat()
+                .body("success", is(false));
+        System.out.println("Error status 500: INTERNAL_SERVER_ERROR");
+    }
+    @Test
+    @Order(6)
+    @DisplayName("Returns the product uploaded by template by Non exist ID")
+    public void getProductUploadedByTemplateByNonExistID(){
+        given()
+                .when()
+                .spec(requestSpecification)
+                .get("https://test4.jmart.kz/gw/catalog/v1/category-content-template-product/667667667")
+                .then()
+                .assertThat()
+                .body("success", is(false));
+        System.out.println("Something strange returns");
+    }
+    @Test
+    @Order(7)
+    @DisplayName("Change the name and product code of the product by Id")
+    public void putNameAndProductCodeOfTheProductById(){
+        String name = "PyleS.O.S Xuyomi";
+        String product_code = "667wws667wws";
+        given()
+                .when()
+                .spec(requestSpecification)
+                .body("{ \"data.product\": \"" + name + "\"}")
+                .put("https://test4.jmart.kz/gw/catalog/v1/category-content-template-product/1670296")
+                .then()
+                .assertThat()
+                .body("data.product", is("PyleS.O.S Xuyomi"));
+        //This API request is done wrong. It asks for name and product code whearas they cannot be found anywhere
+    }
+    @Test
+    @Order(8)
+    @DisplayName("Clarify the product of salesman")
+    public void putClarifyProductOfSalesman(){
+        String file = "PyleS.O.S Xuyomi";
+        String product_code = "667wws667wws";
+        given()
+                .when()
+                .spec(requestSpecification)
+                .body("{ \"data.product\": \"" + file + "\"}")
+                .put("https://test4.jmart.kz/gw/catalog/v1/category-content-template-product/clarify/1670296")
+                .then()
+                .assertThat()
+                .body("file", is("PyleS.O.S Xuyomi"));
+        //This API request is done wrong. It asks for file, send_to_moderation, link_product_code, product_code whearas they cannot be found anywhere
+    }
+    @Test
+    @Order(9)
+    @DisplayName("Create child product of product")
+    public void postCreateChildProductOfProduct(){
+        RequestSpecification responseSpecification = given();
+        Response response= responseSpecification.given()
+                .when()
+                .post("https://test4.jmart.kz/gw/catalog/v1/category-content-template-product/create-child-product");
+        Assert.assertEquals(200, response.getStatusCode());
+        //This API request is done wrong. It does not asks for product Id
+    }
+    @Test
+    @Order(10)
+    @DisplayName("Importing file with products")
+    public void postImportFileWithProducts(){
+        String file = "dawdawd";
+        int company_id= 123;
+        given()
+                .when()
+                .spec(requestSpecification)
+                .body("{ \"file\": \"" + file + "\", \"company_id\": \"" + company_id + "\"}")
+                .post("https://test4.jmart.kz/gw/catalog/v1/category-content-template-product/import")
+                .then()
+                .assertThat()
+                .body("file", is("dawdawd"));
+        //This API request is done correctly. Validation works correctly. Asks for the specific type of file for "file" field
+    }
+    @Test
+    @Order(11)
+    @DisplayName("Detaching the product of seller")
+    public void putDetachingTheProductOfSeller(){
+        RequestSpecification responseSpecification = given();
+        Response response= responseSpecification.given()
+                .when()
+                .put("https://test4.jmart.kz/gw/catalog/v1/category-content-template-product/product-detach/1670296");
+        Assert.assertEquals(200, response.getStatusCode());
+        //This API request is done wrong. It does not searches for the product. Error 404 returns
+    }
+    @Test
+    @Order(12)
+    @DisplayName("Change the status of a product")
+    public void putChangeTheStatusOfProduct(){
+        String status = "A";
+        String product_code = "667wws667wws";
+        given()
+                .when()
+                .spec(requestSpecification)
+                .body("{ \"status\": \"" + status + "\"}")
+                .put("https://test4.jmart.kz/gw/catalog/v1/category-content-template-product/status-change/1670296")
+                .then()
+                .assertThat()
+                .body("status", is("A"));
+        //This API request is done wrong. It does not searches for the product. Error 404 returns
+    }
+    @Test
+    @Order(12)
+    @DisplayName("Change the status of a product")
+    public void putChangeTheStatusOfProduct(){
+        String status = "A";
+        String product_code = "667wws667wws";
+        given()
+                .when()
+                .spec(requestSpecification)
+                .body("{ \"status\": \"" + status + "\"}")
+                .put("https://test4.jmart.kz/gw/catalog/v1/category-content-template-product/status-change/1670296")
+                .then()
+                .assertThat()
+                .body("status", is("A"));
+        //This API request is done wrong. It does not searches for the product. Error 404 returns
     }
 }
