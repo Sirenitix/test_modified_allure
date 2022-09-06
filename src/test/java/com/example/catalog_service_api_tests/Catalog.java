@@ -200,12 +200,19 @@ class Catalog_v1_products_by_ids_full {
     @DisplayName("Asserts that the list of categories is not empty.")
     public void validIdCheckResponseData(){
         ResponseBody responseBody = RestAssured.given().request(Method.GET, "?ids=1244667/P").getBody();
-        System.out.println(responseBody.prettyPrint());
         Assert.assertNotNull(responseBody);
     }
 
     @Test
     @Order(6)
+    @DisplayName("Asserts that response has error 404 for th ID that does not exist")
+    public void nonExistingIdCheckResponseData(){
+        int statusCode = RestAssured.given().request(Method.GET, "?ids=1244669/P").getStatusCode();
+        Assert.assertEquals(statusCode, 404);
+    }
+
+    @Test
+    @Order(7)
     @DisplayName("Asserts that the list of categories is not empty.")
     public void inValidIdCheckResponseData(){
         int statusCode = RestAssured.given().request(Method.GET, "?ids=1244669").getStatusCode();
@@ -240,6 +247,22 @@ class Gw_catalog_v1_categories_parent_id {
     public void thereIsAPagination(){
         ResponseBody responseBody = RestAssured.given().request(Method.GET, "272").getBody();
         Assert.assertTrue(responseBody.asString().contains("page="));
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("Asserts that if the parameter is incorrect, the 400 error will occur")
+    public void incorrectParameter() {
+        int statusCode = RestAssured.given().request(Method.GET, "item/2110").getStatusCode();
+        Assert.assertEquals(statusCode, 404);
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("Asserts that response has correct data for valid ID")
+    public void validIdCheckResponseData(){
+        ResponseBody responseBody = RestAssured.given().request(Method.GET, "272").getBody();
+        Assert.assertNotNull(responseBody);
     }
 
 
