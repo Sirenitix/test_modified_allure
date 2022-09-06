@@ -58,7 +58,7 @@ public class СategoryСontentTemplates {
         given()
                 .when()
                 .spec(requestSpecification)
-                .get("/gw/catalog/v1/category-content-templates-features-handbook")
+                .get(configurations.getFeatureHandbook())
                 .then()
                 .assertThat()
                 .statusCode(200);

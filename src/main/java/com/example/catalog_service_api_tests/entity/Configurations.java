@@ -15,5 +15,7 @@ public class Configurations {
 
     private String baseUri;
 
+    private String featureHandbookUri;
+
 
 }
