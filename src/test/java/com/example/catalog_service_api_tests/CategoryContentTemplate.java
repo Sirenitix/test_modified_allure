@@ -25,12 +25,6 @@ import static org.hamcrest.Matchers.*;
 @Slf4j
 public class CategoryContentTemplate extends AbstractTest {
 
-    @Override
-    @BeforeEach
-    public void setup() {
-        super.setup();
-    }
-
     @Autowired
     private Configurations configurations;
 
@@ -40,7 +34,7 @@ public class CategoryContentTemplate extends AbstractTest {
     public void featureHandbook(){
         given()
                 .when()
-                .spec(AbstractTest.requestSpecification)
+                .spec(requestSpecification)
                 .get(configurations.getFeatureHandbookPath())
                 .then()
                 .assertThat()
