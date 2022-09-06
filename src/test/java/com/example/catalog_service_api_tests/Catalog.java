@@ -1,17 +1,19 @@
 package com.example.catalog_service_api_tests;
 
+import com.example.catalog_service_api_tests.entity.Configurations;
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.ResponseBody;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import io.restassured.RestAssured;
 import io.restassured.http.Method;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import org.junit.jupiter.api.Test;
+
 import static io.restassured.RestAssured.*;
-import static org.hamcrest.core.Is.is;
+
 
 public class Catalog {
 }
@@ -370,15 +372,81 @@ class Gw_catalog_v1_categories_popular {
     @DisplayName("Asserts that response has correct data for valid ID")
     public void validIdCheckResponseData(){
         ResponseBody responseBody = RestAssured.given().request(Method.GET).getBody();
-        System.out.println(responseBody.prettyPrint());
-//        Assert.assertNotNull(responseBody);
+        Assert.assertTrue(responseBody.asString().contains("parent_id") && responseBody.asString().contains("type")
+                && responseBody.asString().contains("image_link") && responseBody.asString().contains("title"));
+    }
+}
+
+class Gw_catalog_v1_categories_root {
+    @BeforeAll
+    public static void setup(){
+        RestAssured.baseURI = "https://test4.jmart.kz/gw/catalog/v1/categories/root";
+    }
+    @Test
+    @Order(1)
+    @DisplayName("Asserts that the list of root categories is not empty.")
+    public void notEmptyList(){
+        ResponseBody responseBody = RestAssured.given().request(Method.GET).getBody();
+        Assert.assertNotNull(responseBody, "Result: Response is not empty");
+    }
+    @Test
+    @Order(2)
+    @DisplayName("Asserts that the list of root categories has pagination.")
+    public void noPagination(){
+        ResponseBody responseBody = RestAssured.given().request(Method.GET).getBody();
+        Assert.assertFalse(responseBody.asString().contains("page="));
+    }
+    @Test
+    @Order(3)
+    @DisplayName("Asserts that if the parameter is incorrect, the 400 error will occur")
+    public void incorrectParameter() {
+        int statusCode = RestAssured.given().request(Method.GET, "item/2110").getStatusCode();
+        Assert.assertEquals(statusCode, 404);
     }
 
     @Test
-    @Order(5)
-    @DisplayName("Asserts that response has error 404 for th ID that does not exist")
-    public void nonExistingIdCheckResponseData(){
-        int statusCode = RestAssured.given().request(Method.GET, "321").getStatusCode();
-        Assert.assertEquals(statusCode, 404);
+    @Order(4)
+    @DisplayName("Asserts that response has correct data for valid ID")
+    public void validIdCheckResponseData(){
+        ResponseBody responseBody = RestAssured.given().request(Method.GET).getBody();
+        Assert.assertTrue(responseBody.asString().contains("category_id") && responseBody.asString().contains("category"));
+    }
+}
+
+@Slf4j
+class Gw_catalog_v1_features_list {
+
+    @Autowired
+    private Configurations configurations;
+    protected RequestSpecification requestSpecification;
+
+    @BeforeEach
+    protected void setup(){
+        RestAssured.baseURI = "https://test4.jmart.kz/gw/catalog/v1/features/list";
+        Response response = given()
+                .params("login", configurations.getLogin(), "password", configurations.getPassword())
+                .post(configurations.getSignIn())
+                .then()
+                .statusCode(201)
+                .extract()
+                .response();
+        String access_token = response.path("data.tokens.auth.token").toString();
+        log.info(access_token + " - access_token");
+        String refresh_token = response.path("data.tokens.refresh.token").toString();
+        String Authorization = "Bearer " + access_token;
+        RequestSpecBuilder builder = new RequestSpecBuilder();
+        builder.addHeader("Authorization", Authorization);
+        builder.addHeader("Refresh_token", refresh_token);
+        builder.addHeader("Content-Type", "application/json");
+        requestSpecification = builder.build();
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("Asserts that the list of root categories is not empty.")
+    public void notEmptyList(){
+        ResponseBody responseBody = RestAssured.given().auth().preemptive().basic("dev_test_admin@email.com", "Test_4dmin_Jmart").request(Method.GET).getBody();
+        System.out.println(responseBody.prettyPrint());
+//        Assert.assertNotNull(responseBody, "Result: Response is not empty");
     }
 }
