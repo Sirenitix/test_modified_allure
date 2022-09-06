@@ -18,8 +18,10 @@ public abstract class AbstractTest {
 
     @Autowired
     private Configurations configurations;
+
     static RequestSpecification requestSpecification;
-    String wrongParameter = "@#@&*";
+
+    final String wrongParameter = "@#@&*";
 
 
     @BeforeEach
@@ -29,8 +31,6 @@ public abstract class AbstractTest {
                 .params("login", configurations.getLogin(), "password", configurations.getPassword())
                 .post(configurations.getSignIn())
                 .then()
-                .log()
-                .body()
                 .statusCode(201)
                 .extract()
                 .response();

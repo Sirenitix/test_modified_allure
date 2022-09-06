@@ -39,7 +39,6 @@ public class CategoryContentTemplate extends AbstractTest {
     @DisplayName("get feature handbook status code and status value")
     public void featureHandbook(){
         given()
-                .log().all()
                 .when()
                 .spec(AbstractTest.requestSpecification)
                 .get(configurations.getFeatureHandbookPath())
@@ -49,5 +48,7 @@ public class CategoryContentTemplate extends AbstractTest {
                 .and()
                 .body("success", is(true));
     }
+
+
 
 }
