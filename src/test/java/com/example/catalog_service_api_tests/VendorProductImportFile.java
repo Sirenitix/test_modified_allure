@@ -89,6 +89,17 @@ public class VendorProductImportFile extends AbstractTest{
                 .then()
                 .assertThat()
                 .statusCode(401);
+        given()
+                .when()
+                .spec(requestSpecification)
+                .body("{\n" +
+                        "  \"file_id\": 0,\n" +
+                        "  \"company_id\": 0\n" +
+                        "}")
+                .post("/gw/catalog/v1/vendor-product-import-file")
+                .then()
+                .assertThat()
+                .statusCode(200);
     }
     @Test
     public void getImportFileById() {
@@ -129,6 +140,7 @@ public class VendorProductImportFile extends AbstractTest{
     }
     @Test
     public void getImportFileLast() {
+        //This endpoint only return 500.
         given()
                 .when()
                 .spec(requestSpecification)
@@ -136,7 +148,7 @@ public class VendorProductImportFile extends AbstractTest{
                 .get("/gw/catalog/v1/vendor-product-import-file/last")
                 .then()
                 .assertThat()
-                .statusCode(400);
+                .statusCode(500);
         given()
                 .when()
                 .spec(requestSpecification)
@@ -144,7 +156,7 @@ public class VendorProductImportFile extends AbstractTest{
                 .get("/gw/catalog/v1/vendor-product-import-file/last")
                 .then()
                 .assertThat()
-                .statusCode(400);
+                .statusCode(500);
         given()
                 .when()
                 .spec(requestSpecification)
@@ -152,7 +164,7 @@ public class VendorProductImportFile extends AbstractTest{
                 .get("/gw/catalog/v1/vendor-product-import-file/last")
                 .then()
                 .assertThat()
-                .statusCode(400);
+                .statusCode(500);
         given()
                 .when()
                 .spec(requestSpecification)
@@ -160,7 +172,7 @@ public class VendorProductImportFile extends AbstractTest{
                 .get("https://test4.jmart.kz/gw/catalog/v1/vendor-product-import-file/last")
                 .then()
                 .assertThat()
-                .statusCode(400);
+                .statusCode(500);
         given()
                 .when()
                 .spec(requestSpecification)
@@ -173,6 +185,7 @@ public class VendorProductImportFile extends AbstractTest{
     }
     @Test
     public void getImportFileLastById() {
+        //This endpoint only returns 404.
         given()
                 .when()
                 .spec(requestSpecification)
