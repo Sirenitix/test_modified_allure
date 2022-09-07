@@ -18,7 +18,7 @@ public class Catalog {
 class Catalog_v1_categories_by_ids {
     @BeforeAll
     public static void setup(){
-        RestAssured.baseURI = "https://test4.jmart.kz/catalog/v1/categories/categories_list";
+        RestAssured.baseURI = "https://test4.jmart.kz/catalog/v1/categories/by_ids";
     }
 
     @Test
@@ -36,7 +36,7 @@ class Catalog_v1_categories_by_ids {
     @Test
     @Order(3)
     @DisplayName("Asserts that the list of categories has a limit.")
-    public void thereIsALimit(){
+    public void hasLimit(){
         Assert.assertTrue(RestAssured.given().request(Method.GET).getBody().asString().contains("per_page"));
     }
     @Test
@@ -45,6 +45,7 @@ class Catalog_v1_categories_by_ids {
     public void incorrectParameter(){
         Assert.assertEquals(RestAssured.given().request(Method.GET, "@#@&*").getStatusCode(), 400);
     }
+    //404 on the page, 200 even with wrong parameter
 }
 
 class Catalog_v1_categories_categories_list {
@@ -61,13 +62,13 @@ class Catalog_v1_categories_categories_list {
     @Test
     @Order(2)
     @DisplayName("Asserts that the list of categories has pagination.")
-    public void thereIsAPagination(){
+    public void hasPagination(){
         Assert.assertTrue(RestAssured.given().request(Method.GET).getBody().asString().contains("page="));
     }
     @Test
     @Order(3)
     @DisplayName("Asserts that the list of categories has a limit.")
-    public void thereIsALimit(){
+    public void hasLimit(){
         Assert.assertTrue(RestAssured.given().request(Method.GET).getBody().asString().contains("per_page"));
     }
 
@@ -75,8 +76,9 @@ class Catalog_v1_categories_categories_list {
     @Order(4)
     @DisplayName("Asserts that the status code is 400 when passed the incorrect parameter")
     public void incorrectParameter(){
-        Assert.assertEquals(RestAssured.given().request(Method.GET, "/220220%").getStatusCode(), 400);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "@#@&*").getStatusCode(), 400);
     }
+    //404 on the page
 }
 
 class Catalog_v1_categories_get_two_top_levels {
