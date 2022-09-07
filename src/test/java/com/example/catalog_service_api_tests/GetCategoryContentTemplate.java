@@ -363,3 +363,112 @@ class PostCategoryContentTemplate extends AbstractTest {
 }
 
 
+@Slf4j
+@Nested
+class PutCategoryContentTemplate extends AbstractTest {
+
+    @Autowired
+    private Configurations configurations;
+
+    @Test
+    @Order(0)
+    @DisplayName("update template with name and features check for name and features")
+    public void update(){
+        given().log().all()
+                .when()
+                .spec(requestSpecification)
+                .body(TEST_TEMPLATE)
+                .put(configurations.getFeatureHandbookPath() + ONE)
+                .then()
+                .body("data.template_feature_name", is(TEST_TEMPLATE_FEATURE_NAME))
+                .body("data.features[0]", is(TEST_TEMPLATE_FEATURES));
+
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("update template only with name check for status")
+    public void updateOnlyName(){
+        given().log().all()
+                .when()
+                .spec(requestSpecification)
+                .body(TESTTEMPLATE_ONLY_WITH_NAME)
+                .put(configurations.getFeatureHandbookPath() + ONE)
+                .then()
+                .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("update template only with name check for status")
+    public void updateOnlyFeatures(){
+        given().log().all()
+                .when()
+                .spec(requestSpecification)
+                .body(TESTTEMPLATE_ONLY_WITH_FEATURES)
+                .put(configurations.getFeatureHandbookPath() + ONE)
+                .then()
+                .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+
+    }
+
+
+    @Test
+    @Order(3)
+    @DisplayName("update template with wrong name check for status")
+    public void wrongBodyParamName(){
+        given().log().all()
+                .when()
+                .spec(requestSpecification)
+                .body(TESTTEMPLATE_WITH_WRONG_NAME)
+                .put(configurations.getFeatureHandbookPath() + ONE)
+                .then()
+                .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("update template with integer features check for status 422")
+    public void wrongBodyParamFeatures(){
+        given().log().all()
+                .when()
+                .spec(requestSpecification)
+                .body(TESTTEMPLATE_WITH_WRONG_FEATURES)
+                .put(configurations.getFeatureHandbookPath() + ONE)
+                .then()
+                .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+
+    }
+
+    @Test
+    @Order(5)
+    @DisplayName("update template with integer features check for status 422")
+    public void withoutAnyParameter(){
+        given().log().all()
+                .when()
+                .spec(requestSpecification)
+                .put(configurations.getFeatureHandbookPath() + ONE)
+                .then()
+                .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+
+    }
+
+    @Test
+    @Order(6)
+    @DisplayName("update template with integer features check for status 422")
+    public void emptyJson(){
+        given().log().all()
+                .when()
+                .spec(requestSpecification)
+                .body(EMPTY_JSON)
+                .put(configurations.getFeatureHandbookPath() + ONE)
+                .then()
+                .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
+
+    }
+
+
+
+}
