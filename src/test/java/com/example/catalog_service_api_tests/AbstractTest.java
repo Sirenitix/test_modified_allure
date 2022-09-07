@@ -19,8 +19,10 @@ public abstract class AbstractTest {
     @Autowired
     private Configurations configurations;
     protected RequestSpecification requestSpecification;
-
     final String wrongParameter = "@#@&*";
+    final Long rigthPageNumber = 7L;
+
+    final Long wrongPageNumber = 909090909L;
 
 
     @BeforeEach

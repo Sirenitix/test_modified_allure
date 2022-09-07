@@ -1,46 +1,41 @@
 package com.example.catalog_service_api_tests;
 
-import io.restassured.RestAssured;
-import io.restassured.RestAssured.*;
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
-import org.junit.Before;
-import org.junit.Test;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static io.restassured.RestAssured.given;
-
-public class VendorProductImport {
-    private static RequestSpecification requestSpecification;
-    @Before
-    public void setup() {
-        RestAssured.baseURI = "https://test4.jmart.kz/gw/catalog/v1/my/vendor-product-import";
-        Response response = given()
-                .log()
-                .all()
-                .params("login", "dev_test_admin@email.com", "password", "Test_4dmin_Jmart")
-                .post("https://test4.jmart.kz/gw/user/v1/auth/sign-in")
-                .then()
-                .log()
-                .body()
-                .statusCode(201)
-                .extract()
-                .response();
-        String access_token = response.path("data.tokens.auth.token").toString();
-        String refresh_token = response.path("data.tokens.refresh.token").toString();
-        String Authorization = "Bearer " + access_token;
-        RequestSpecBuilder builder = new RequestSpecBuilder();
-        builder.addHeader("Authorization", Authorization);
-        builder.addHeader("refresh_token", refresh_token);
-        builder.addHeader("Content-Type", "application/json");
-        requestSpecification = builder.build();
-    }
+@Slf4j
+public class VendorProductImport extends AbstractTest {
+    @Autowired
     @Test
-    public void check(){
+    public void getMyImport() {
         given()
                 .when()
                 .spec(requestSpecification)
-                .get("https://test4.jmart.kz/gw/catalog/v1/my/vendor-product-import")
+                .param("Company-Id", 1)
+                .get("/my/vendor-product-import")
+                .then()
+                .assertThat()
+                .statusCode(200);
+    }
+    @Test
+    public void getMyImportById() {
+        given()
+                .when()
+                .spec(requestSpecification)
+                .param("Company-Id", 1)
+                .get("/my/vendor-product-import")
+                .then()
+                .assertThat()
+                .statusCode(200);
+    }
+    @Test
+    public void getImport() {
+        given()
+                .when()
+                .spec(requestSpecification)
+                .get("/vendor-product-import")
                 .then()
                 .assertThat()
                 .statusCode(200);
