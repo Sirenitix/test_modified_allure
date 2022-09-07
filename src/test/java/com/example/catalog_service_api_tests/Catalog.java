@@ -698,8 +698,119 @@ class Gw_catalog_v1_products_by_codes {
         builder.addHeader("Content-Type", "application/json");
         requestSpecification = builder.build();
     }
-
 }
+@Slf4j
+class Gw_catalog_v1_products_by_ids {
+    String productByIds = "https://test4.jmart.kz/gw/catalog/v1/products/by_ids";
 
+    @Autowired
+    protected RequestSpecification requestSpecification;
+    @BeforeEach
+    protected void setup(){
+        RestAssured.baseURI = "https://test4.jmart.kz";
+        Response response = given()
+                .params("login", "dev_test_admin@email.com", "password", "Test_4dmin_Jmart")
+                .post("https://test4.jmart.kz/gw/user/v1/auth/sign-in")
+                .then()
+                .statusCode(201)
+                .extract()
+                .response();
+        String access_token = response.path("data.tokens.auth.token").toString();
+        log.info(access_token + " - access_token");
+        String refresh_token = response.path("data.tokens.refresh.token").toString();
+        String Authorization = "Bearer " + access_token;
+        RequestSpecBuilder builder = new RequestSpecBuilder();
+        builder.addHeader("Authorization", Authorization);
+        builder.addHeader("Refresh_token", refresh_token);
+        builder.addHeader("Content-Type", "application/json");
+        requestSpecification = builder.build();
+    }
+}
+@Slf4j
+class Gw_catalog_v1_products_codes_by_ids {
+    String productsCodesByIds = "https://test4.jmart.kz/gw/catalog/v1/products/codes-by-ids";
 
+    @Autowired
+    protected RequestSpecification requestSpecification;
+    @BeforeEach
+    protected void setup(){
+        RestAssured.baseURI = "https://test4.jmart.kz";
+        Response response = given()
+                .params("login", "dev_test_admin@email.com", "password", "Test_4dmin_Jmart")
+                .post("https://test4.jmart.kz/gw/user/v1/auth/sign-in")
+                .then()
+                .statusCode(201)
+                .extract()
+                .response();
+        String access_token = response.path("data.tokens.auth.token").toString();
+        log.info(access_token + " - access_token");
+        String refresh_token = response.path("data.tokens.refresh.token").toString();
+        String Authorization = "Bearer " + access_token;
+        RequestSpecBuilder builder = new RequestSpecBuilder();
+        builder.addHeader("Authorization", Authorization);
+        builder.addHeader("Refresh_token", refresh_token);
+        builder.addHeader("Content-Type", "application/json");
+        requestSpecification = builder.build();
+    }
+}
+@Slf4j
+class Gw_catalog_v1_products_order_products_company {
+    String orderProductsCompany = "https://test4.jmart.kz/gw/catalog/v1/products/order-products-company";
 
+    @Autowired
+    protected RequestSpecification requestSpecification;
+    @BeforeEach
+    protected void setup(){
+        RestAssured.baseURI = "https://test4.jmart.kz";
+        Response response = given()
+                .params("login", "dev_test_admin@email.com", "password", "Test_4dmin_Jmart")
+                .post("https://test4.jmart.kz/gw/user/v1/auth/sign-in")
+                .then()
+                .statusCode(201)
+                .extract()
+                .response();
+        String access_token = response.path("data.tokens.auth.token").toString();
+        log.info(access_token + " - access_token");
+        String refresh_token = response.path("data.tokens.refresh.token").toString();
+        String Authorization = "Bearer " + access_token;
+        RequestSpecBuilder builder = new RequestSpecBuilder();
+        builder.addHeader("Authorization", Authorization);
+        builder.addHeader("Refresh_token", refresh_token);
+        builder.addHeader("Content-Type", "application/json");
+        requestSpecification = builder.build();
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("Jai test")
+    public void jaiTest(){
+        System.out.println(RestAssured.given().when().spec(requestSpecification).request(Method.GET, orderProductsCompany).getBody().prettyPrint());
+    }
+}
+@Slf4j
+class Gw_catalog_v1_products_supermarket_companyId {
+    String supermarketCompany = "https://test4.jmart.kz/gw/catalog/v1/products/order-products-company";
+
+    @Autowired
+    protected RequestSpecification requestSpecification;
+    @BeforeEach
+    protected void setup(){
+        RestAssured.baseURI = "https://test4.jmart.kz";
+        Response response = given()
+                .params("login", "dev_test_admin@email.com", "password", "Test_4dmin_Jmart")
+                .post("https://test4.jmart.kz/gw/user/v1/auth/sign-in")
+                .then()
+                .statusCode(201)
+                .extract()
+                .response();
+        String access_token = response.path("data.tokens.auth.token").toString();
+        log.info(access_token + " - access_token");
+        String refresh_token = response.path("data.tokens.refresh.token").toString();
+        String Authorization = "Bearer " + access_token;
+        RequestSpecBuilder builder = new RequestSpecBuilder();
+        builder.addHeader("Authorization", Authorization);
+        builder.addHeader("Refresh_token", refresh_token);
+        builder.addHeader("Content-Type", "application/json");
+        requestSpecification = builder.build();
+    }
+}
