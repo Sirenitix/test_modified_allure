@@ -29,8 +29,8 @@ class Catalog_v1_categories_by_ids {
     }
     @Test
     @Order(2)
-    @DisplayName("Asserts that the list of categories has pagination.")
-    public void thereIsAPagination(){
+    @DisplayName("Asserts that the list of categories has no pagination.")
+    public void hasPagination(){
         Assert.assertTrue(RestAssured.given().request(Method.GET).getBody().asString().contains("page="));
     }
     @Test
@@ -43,7 +43,7 @@ class Catalog_v1_categories_by_ids {
     @Order(4)
     @DisplayName("Asserts that the status code is 400 when passed the incorrect parameter")
     public void incorrectParameter(){
-        Assert.assertEquals(RestAssured.given().request(Method.GET, "220220%").getStatusCode(), 400);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "@#@&*").getStatusCode(), 400);
     }
 }
 
@@ -152,7 +152,8 @@ class Catalog_v1_products_by_ids_full {
     @Order(1)
     @DisplayName("Asserts that the list of categories is not empty.")
     public void notEmptyList(){
-        Assert.assertNotNull(RestAssured.given().request(Method.GET).getBody(), "Result: Response is not empty");
+//        Assert.assertNotNull(RestAssured.given().request(Method.GET).getBody());
+        System.out.println(RestAssured.given().request(Method.GET).getBody().prettyPrint());
     }
     @Test
     @Order(2)
@@ -310,7 +311,7 @@ class Gw_catalog_v1_categories_popular {
     @Order(1)
     @DisplayName("Asserts that the list of popular categories is not empty.")
     public void notEmptyList(){
-        Assert.assertNotNull(RestAssured.given().request(Method.GET).getBody(), "Result: Response is not empty");
+        Assert.assertNotNull(RestAssured.given().request(Method.GET).getBody());
     }
 
     @Test
@@ -746,7 +747,62 @@ class Gw_catalog_v1_products_order_products_company {
 }
 @Slf4j
 class Gw_catalog_v1_products_supermarket_companyId {
-    String supermarketCompany = "https://test4.jmart.kz/gw/catalog/v1/products/order-products-company";
+    String supermarketCompany = "https://test4.jmart.kz/gw/catalog/v1/products/supermarket/1476";
+
+    @Autowired
+    protected RequestSpecification requestSpecification;
+    @BeforeEach
+    protected void setup(){
+        RestAssured.baseURI = "https://test4.jmart.kz";
+        Response response = given()
+                .params("login", "dev_test_admin@email.com", "password", "Test_4dmin_Jmart")
+                .post("https://test4.jmart.kz/gw/user/v1/auth/sign-in")
+                .then()
+                .statusCode(201)
+                .extract()
+                .response();
+        String access_token = response.path("data.tokens.auth.token").toString();
+        log.info(access_token + " - access_token");
+        String refresh_token = response.path("data.tokens.refresh.token").toString();
+        String Authorization = "Bearer " + access_token;
+        RequestSpecBuilder builder = new RequestSpecBuilder();
+        builder.addHeader("Authorization", Authorization);
+        builder.addHeader("Refresh_token", refresh_token);
+        builder.addHeader("Content-Type", "application/json");
+        requestSpecification = builder.build();
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("Asserts that the product description is not empty.")
+    public void notEmptyList(){
+        Assert.assertNotNull(RestAssured.given().when().spec(requestSpecification).request(Method.GET, supermarketCompany).getBody());
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("Asserts that the product description has no pagination.")
+    public void noPagination(){
+        Assert.assertFalse(RestAssured.given().when().spec(requestSpecification).request(Method.GET, supermarketCompany).getBody().asString().contains("total_pages"));
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("Asserts that the products list has no limit.")
+    public void noLimit(){
+        Assert.assertFalse(RestAssured.given().when().spec(requestSpecification).request(Method.GET, supermarketCompany).getBody().asString().contains("per_page"));
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("Asserts that if the parameter is incorrect, the 400 error will occur")
+    public void incorrectParameter() {
+        Assert.assertEquals(RestAssured.given().when().spec(requestSpecification).request(Method.GET, supermarketCompany + "/@#@&*").getStatusCode(), 404);
+    }
+}
+@Slf4j
+class Gw_catalog_v1_products_update_price {
+    String updatePrice = "https://test4.jmart.kz/gw/catalog/v1/products/update-price";
 
     @Autowired
     protected RequestSpecification requestSpecification;
