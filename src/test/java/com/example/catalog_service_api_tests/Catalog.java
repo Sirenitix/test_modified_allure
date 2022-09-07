@@ -228,30 +228,26 @@ class Gw_catalog_v1_categories_parent_id {
     @Order(3)
     @DisplayName("Asserts that if the parameter is incorrect, the 400 error will occur")
     public void incorrectParameter() {
-        int statusCode = RestAssured.given().request(Method.GET, "item/2110").getStatusCode();
-        Assert.assertEquals(statusCode, 404);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "item/2110").getStatusCode(), 404);
     }
 
     @Test
     @Order(4)
     @DisplayName("Asserts that response has correct data for valid ID")
     public void validIdCheckResponseData(){
-        ResponseBody responseBody = RestAssured.given().request(Method.GET, "272").getBody();
-        Assert.assertNotNull(responseBody);
+        Assert.assertNotNull(RestAssured.given().request(Method.GET, "272").getBody());
     }
     @Test
     @Order(5)
     @DisplayName("Asserts that response has error 404 for th ID that does not exist")
     public void nonExistingIdCheckResponseData(){
-        int statusCode = RestAssured.given().request(Method.GET, "-1").getStatusCode();
-        Assert.assertEquals(statusCode, 404);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "-1").getStatusCode(), 404);
     }
     @Test
     @Order(7)
     @DisplayName("Asserts that the list of categories is not empty.")
     public void inValidIdCheckResponseData(){
-        int statusCode = RestAssured.given().request(Method.GET, "ids=1244669").getStatusCode();
-        Assert.assertEquals(statusCode, 404);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "ids=1244669").getStatusCode(), 404);
     }
 }
 
@@ -265,48 +261,42 @@ class Gw_catalog_v1_categories_contain_parent_id {
     @Order(1)
     @DisplayName("Asserts that the list of categories in a specified parent category is not empty.")
     public void notEmptyList(){
-        ResponseBody responseBody = RestAssured.given().request(Method.GET, "272").getBody();
-        Assert.assertNotNull(responseBody, "Result: Response is not empty");
+        Assert.assertNotNull(RestAssured.given().request(Method.GET, "272").getBody(), "Result: Response is not empty");
     }
 
     @Test
     @Order(2)
     @DisplayName("Asserts that the list of categories has pagination.")
     public void noPagination(){
-        ResponseBody responseBody = RestAssured.given().request(Method.GET, "272").getBody();
-        Assert.assertFalse(responseBody.asString().contains("page="));
+        Assert.assertFalse(RestAssured.given().request(Method.GET, "272").getBody().asString().contains("page="));
     }
 
     @Test
     @Order(3)
     @DisplayName("Asserts that if the parameter is incorrect, the 400 error will occur")
     public void incorrectParameter() {
-        int statusCode = RestAssured.given().request(Method.GET, "item/2110").getStatusCode();
-        Assert.assertEquals(statusCode, 404);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "item/2110").getStatusCode(), 404);
     }
 
     @Test
     @Order(4)
     @DisplayName("Asserts that response has correct data for valid ID")
     public void validIdCheckResponseData(){
-        ResponseBody responseBody = RestAssured.given().request(Method.GET, "272").getBody();
-        Assert.assertNotNull(responseBody);
+        Assert.assertNotNull(RestAssured.given().request(Method.GET, "272").getBody());
     }
 
     @Test
     @Order(5)
     @DisplayName("Asserts that response has error 404 for th ID that does not exist")
     public void nonExistingIdCheckResponseData(){
-        int statusCode = RestAssured.given().request(Method.GET, "321").getStatusCode();
-        Assert.assertEquals(statusCode, 404);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "321").getStatusCode(), 404);
     }
 
     @Test
     @Order(6)
     @DisplayName("Asserts that the list of categories is not empty.")
     public void inValidIdCheckResponseData(){
-        int statusCode = RestAssured.given().request(Method.GET, "ids=1244669").getStatusCode();
-        Assert.assertEquals(statusCode, 404);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "ids=1244669").getStatusCode(), 404);
     }
 }
 
@@ -320,8 +310,7 @@ class Gw_catalog_v1_categories_popular {
     @Order(1)
     @DisplayName("Asserts that the list of popular categories is not empty.")
     public void notEmptyList(){
-        ResponseBody responseBody = RestAssured.given().request(Method.GET).getBody();
-        Assert.assertNotNull(responseBody, "Result: Response is not empty");
+        Assert.assertNotNull(RestAssured.given().request(Method.GET).getBody(), "Result: Response is not empty");
     }
 
     @Test
