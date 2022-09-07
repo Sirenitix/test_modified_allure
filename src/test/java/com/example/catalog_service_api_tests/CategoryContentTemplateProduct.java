@@ -197,5 +197,147 @@ public class CategoryContentTemplateProduct {
                 .body("status", is("A"));
         //This API request is done wrong. It does not searches for the product. Error 404 returns
     }
+    @Test
+    @Order(13)
+    @DisplayName("Get List of products uploaded by template for salesman")
+    public void getListOfProductsUploadedByTemplateForSalesman(){
+        given()
+                .when()
+                .spec(requestSpecification)
+                .get("https://test4.jmart.kz/gw/catalog/v1/my/category-content-template-product?name=qwdqwd&company_id=0&status=0")
+                .then()
+                .assertThat()
+                .body("success", is(true));
+        //API is closed.
+        //"status": 403,
+        //"error": "Access forbidden",
+        //"message": "You don't have permission to access this resource"
+    }
 
+    @Test
+    @Order(14)
+    @DisplayName("Returns product that has been uploaded by template by ID for Salesman")
+    public void getProductUploadedByTemplateByIdForSalesman(){
+        given()
+                .when()
+                .spec(requestSpecification)
+                .get("https://test4.jmart.kz/gw/catalog/v1/my/category-content-template-product/1670296")
+                .then()
+                .assertThat()
+                .body("success", is(true));
+        //API is closed.
+        //"status": 403,
+        //"error": "Access forbidden",
+        //"message": "You don't have permission to access this resource"
+    }
+    @Test
+    @Order(15)
+    @DisplayName("Change the name and product code of the product by Id being Salesman")
+    public void putNameAndProductCodeOfTheProductByIdByBeingSalesman(){
+        String name = "PyleS.O.S Xuyomi";
+        String product_code = "667wws667wws";
+        given()
+                .when()
+                .spec(requestSpecification)
+                .body("{ \"data.product\": \"" + name + "\"}")
+                .put("https://test4.jmart.kz/gw/catalog/v1/my/category-content-template-product/1670296")
+                .then()
+                .assertThat()
+                .body("data.product", is("PyleS.O.S Xuyomi"));
+        //This API request is done wrong. It asks for file, send_to_moderation, link_product_code, product_code whearas they cannot be found anywhere
+        //API is closed.
+        //"status": 403,
+        //"error": "Access forbidden",
+        //"message": "You don't have permission to access this resource"
+    }
+    @Test
+    @Order(16)
+    @DisplayName("Clarify the product of salesman for Salesman")
+    public void putClarifyProductOfSalesmanForSalesman(){
+        String file = "PyleS.O.S Xuyomi";
+        String product_code = "667wws667wws";
+        given()
+                .when()
+                .spec(requestSpecification)
+                .body("{ \"data.product\": \"" + file + "\"}")
+                .put("https://test4.jmart.kz/gw/catalog/v1/my/category-content-template-product/clarify/1670296")
+                .then()
+                .assertThat()
+                .body("file", is("PyleS.O.S Xuyomi"));
+        //This API request is done wrong. It asks for file, send_to_moderation, link_product_code, product_code whearas they cannot be found anywhere
+        //API is closed.
+        //"status": 403,
+        //"error": "Access forbidden",
+        //"message": "You don't have permission to access this resource"
+    }
+    @Test
+    @Order(17)
+    @DisplayName("Create child product of product for Salesman")
+    public void postCreateChildProductOfProductForSalesman(){
+        RequestSpecification responseSpecification = given();
+        Response response= responseSpecification.given()
+                .when()
+                .post("https://test4.jmart.kz/gw/catalog/v1/my/category-content-template-product/create-child-product");
+        Assert.assertEquals(200, response.getStatusCode());
+        //This API request is done wrong. It does not asks for product Id
+        //API is closed.
+        //"status": 403,
+        //"error": "Access forbidden",
+        //"message": "You don't have permission to access this resource"
+    }
+    @Test
+    @Order(18)
+    @DisplayName("Importing file with products for Salesman")
+    public void postImportFileWithProductsForSalesman(){
+        String file = "dawdawd";
+        int company_id= 123;
+        given()
+                .when()
+                .spec(requestSpecification)
+                .body("{ \"file\": \"" + file + "\", \"company_id\": \"" + company_id + "\"}")
+                .post("https://test4.jmart.kz/gw/catalog/v1/my/category-content-template-product/import")
+                .then()
+                .assertThat()
+                .body("file", is("dawdawd"));
+        //This API request is done correctly. Validation works correctly. Asks for the specific type of file for "file" field
+        //API is closed.
+        //"status": 403,
+        //"error": "Access forbidden",
+        //"message": "You don't have permission to access this resource"
+    }
+    @Test
+    @Order(19)
+    @DisplayName("Detaching the product of seller for Seller")
+    public void putDetachingTheProductOfSellerForSeller(){
+        RequestSpecification responseSpecification = given();
+        Response response= responseSpecification.given()
+                .when()
+                .put("https://test4.jmart.kz/gw/catalog/v1/my/category-content-template-product/product-detach/1670296");
+        Assert.assertEquals(200, response.getStatusCode());
+        //This API request is done wrong. It does not searches for the product.
+        //API is closed.
+        //"status": 403,
+        //"error": "Access forbidden",
+        //"message": "You don't have permission to access this resource"
+    }
+    @Test
+    @Order(20)
+    @DisplayName("Change the status of a product for Salesman")
+    public void putChangeTheStatusOfProductforSalesman(){
+        String status = "A";
+        String product_code = "667wws667wws";
+        given()
+                .when()
+                .spec(requestSpecification)
+                .body("{ \"status\": \"" + status + "\"}")
+                .put("https://test4.jmart.kz/gw/catalog/v1/my/category-content-template-product/status-change/1670296")
+                .then()
+                .assertThat()
+                .body("status", is("A"));
+        //This API request is done wrong. It does not searches for the product.
+        //API is closed.
+        //"status": 403,
+        //"error": "Access forbidden",
+        //"message": "You don't have permission to access this resource"
+    }
 }
