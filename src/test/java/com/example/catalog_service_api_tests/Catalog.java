@@ -416,16 +416,18 @@ class Gw_catalog_v1_categories_root {
 @Slf4j
 class Gw_catalog_v1_features_list {
 
+    String featuresList = "https://test4.jmart.kz/gw/catalog/v1/features/list";
+
     @Autowired
     private Configurations configurations;
     protected RequestSpecification requestSpecification;
 
     @BeforeEach
     protected void setup(){
-        RestAssured.baseURI = configurations.getBaseUri();
+        RestAssured.baseURI = "https://test4.jmart.kz";
         Response response = given()
-                .params("login", configurations.getLogin(), "password", configurations.getPassword())
-                .post(configurations.getSignIn())
+                .params("login", "dev_test_admin@email.com", "password", "Test_4dmin_Jmart")
+                .post("https://test4.jmart.kz/gw/user/v1/auth/sign-in")
                 .then()
                 .statusCode(201)
                 .extract()
@@ -443,10 +445,210 @@ class Gw_catalog_v1_features_list {
 
     @Test
     @Order(1)
-    @DisplayName("Asserts that the list of root categories is not empty.")
+    @DisplayName("Asserts that the features list is not empty.")
     public void notEmptyList(){
-        ResponseBody responseBody = RestAssured.given().when().spec(requestSpecification).request(Method.GET, "https://test4.jmart.kz/gw/catalog/v1/features/list").getBody();
-        System.out.println(responseBody.prettyPrint());
-//        Assert.assertNotNull(responseBody, "Result: Response is not empty");
+        Assert.assertNotNull(RestAssured.given().when().spec(requestSpecification).request(Method.GET, featuresList).getBody());
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("Asserts that the features list has a pagination.")
+    public void thereIsAPagination(){
+        Assert.assertTrue(RestAssured.given().when().spec(requestSpecification).request(Method.GET, featuresList).getBody().asString().contains("page="));
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("Asserts that the features list has a limit.")
+    public void thereIsALimit(){
+        Assert.assertTrue(RestAssured.given().when().spec(requestSpecification).request(Method.GET, featuresList).getBody().asString().contains("per_page"));
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("Asserts that if the parameter is incorrect, the 400 error will occur")
+    public void incorrectParameter() {
+        Assert.assertEquals(RestAssured.given().when().spec(requestSpecification).request(Method.GET, featuresList + "/@#@&*").getStatusCode(), 404);
     }
 }
+@Slf4j
+class Gw_catalog_v1_features_variants_list {
+
+    String featureVariantsList = "https://test4.jmart.kz/gw/catalog/v1/features/variants/list";
+
+    @Autowired
+    private Configurations configurations;
+    protected RequestSpecification requestSpecification;
+
+    @BeforeEach
+    protected void setup(){
+        RestAssured.baseURI = "https://test4.jmart.kz";
+        Response response = given()
+                .params("login", "dev_test_admin@email.com", "password", "Test_4dmin_Jmart")
+                .post("https://test4.jmart.kz/gw/user/v1/auth/sign-in")
+                .then()
+                .statusCode(201)
+                .extract()
+                .response();
+        String access_token = response.path("data.tokens.auth.token").toString();
+        log.info(access_token + " - access_token");
+        String refresh_token = response.path("data.tokens.refresh.token").toString();
+        String Authorization = "Bearer " + access_token;
+        RequestSpecBuilder builder = new RequestSpecBuilder();
+        builder.addHeader("Authorization", Authorization);
+        builder.addHeader("Refresh_token", refresh_token);
+        builder.addHeader("Content-Type", "application/json");
+        requestSpecification = builder.build();
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("Asserts that the feature variants list is not empty.")
+    public void notEmptyList(){
+        Assert.assertNotNull(RestAssured.given().when().spec(requestSpecification).request(Method.GET, featureVariantsList).getBody());
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("Asserts that the feature variants list has a pagination.")
+    public void thereIsAPagination(){
+        Assert.assertTrue(RestAssured.given().when().spec(requestSpecification).request(Method.GET, featureVariantsList).getBody().asString().contains("next_page"));
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("Asserts that the features list has a limit.")
+    public void thereIsALimit(){
+        Assert.assertTrue(RestAssured.given().when().spec(requestSpecification).request(Method.GET, featureVariantsList).getBody().asString().contains("per_page"));
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("Asserts that if the parameter is incorrect, the 400 error will occur")
+    public void incorrectParameter() {
+        Assert.assertEquals(RestAssured.given().when().spec(requestSpecification).request(Method.GET, featureVariantsList + "/@#@&*").getStatusCode(), 404);
+    }
+}
+@Slf4j
+class Gw_catalog_v1_my_products_statusChange_id {
+    String statusChange = "https://test4.jmart.kz/gw/catalog/v1/my/products/status-change/342517/P";
+
+    @Autowired
+    protected RequestSpecification requestSpecification;
+    @BeforeEach
+    protected void setup(){
+        RestAssured.baseURI = "https://test4.jmart.kz";
+        Response response = given()
+                .params("login", "dev_test_admin@email.com", "password", "Test_4dmin_Jmart")
+                .post("https://test4.jmart.kz/gw/user/v1/auth/sign-in")
+                .then()
+                .statusCode(201)
+                .extract()
+                .response();
+        String access_token = response.path("data.tokens.auth.token").toString();
+        log.info(access_token + " - access_token");
+        String refresh_token = response.path("data.tokens.refresh.token").toString();
+        String Authorization = "Bearer " + access_token;
+        RequestSpecBuilder builder = new RequestSpecBuilder();
+        builder.addHeader("Authorization", Authorization);
+        builder.addHeader("Refresh_token", refresh_token);
+        builder.addHeader("Content-Type", "application/json");
+        requestSpecification = builder.build();
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("Jai test")
+    public void jaiTest(){
+        System.out.println(RestAssured.given().when().spec(requestSpecification).request(Method.GET, statusChange).getBody().prettyPrint());
+    }
+}
+@Slf4j
+class Gw_catalog_v1_products {
+    String productsListing = "https://test4.jmart.kz/gw/catalog/v1/products";
+
+    @Autowired
+    protected RequestSpecification requestSpecification;
+    @BeforeEach
+    protected void setup(){
+        RestAssured.baseURI = "https://test4.jmart.kz";
+        Response response = given()
+                .params("login", "dev_test_admin@email.com", "password", "Test_4dmin_Jmart")
+                .post("https://test4.jmart.kz/gw/user/v1/auth/sign-in")
+                .then()
+                .statusCode(201)
+                .extract()
+                .response();
+        String access_token = response.path("data.tokens.auth.token").toString();
+        log.info(access_token + " - access_token");
+        String refresh_token = response.path("data.tokens.refresh.token").toString();
+        String Authorization = "Bearer " + access_token;
+        RequestSpecBuilder builder = new RequestSpecBuilder();
+        builder.addHeader("Authorization", Authorization);
+        builder.addHeader("Refresh_token", refresh_token);
+        builder.addHeader("Content-Type", "application/json");
+        requestSpecification = builder.build();
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("Asserts that the products list is not empty.")
+    public void notEmptyList(){
+        Assert.assertNotNull(RestAssured.given().when().spec(requestSpecification).request(Method.GET, productsListing + "?category_id=268").getBody());
+    }
+    @Test
+    @Order(2)
+    @DisplayName("Asserts that the products list has a pagination.")
+    public void thereIsAPagination(){
+        Assert.assertTrue(RestAssured.given().when().spec(requestSpecification).request(Method.GET, productsListing + "?category_id=268").getBody().asString().contains("total_pages"));
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("Asserts that the products list has a limit.")
+    public void thereIsALimit(){
+        Assert.assertTrue(RestAssured.given().when().spec(requestSpecification).request(Method.GET, productsListing + "?category_id=268").getBody().asString().contains("items_per_page"));
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("Asserts that if the parameter is incorrect, the 400 error will occur")
+    public void incorrectParameter() {
+        Assert.assertEquals(RestAssured.given().when().spec(requestSpecification).request(Method.GET, productsListing + "/@#@&*").getStatusCode(), 404);
+    }
+}
+@Slf4j
+class Gw_catalog_v1_products_product_id {
+    String specificProduct = "https://test4.jmart.kz/gw/catalog/v1/products/3177149";
+
+    @Autowired
+    protected RequestSpecification requestSpecification;
+    @BeforeEach
+    protected void setup(){
+        RestAssured.baseURI = "https://test4.jmart.kz";
+        Response response = given()
+                .params("login", "dev_test_admin@email.com", "password", "Test_4dmin_Jmart")
+                .post("https://test4.jmart.kz/gw/user/v1/auth/sign-in")
+                .then()
+                .statusCode(201)
+                .extract()
+                .response();
+        String access_token = response.path("data.tokens.auth.token").toString();
+        log.info(access_token + " - access_token");
+        String refresh_token = response.path("data.tokens.refresh.token").toString();
+        String Authorization = "Bearer " + access_token;
+        RequestSpecBuilder builder = new RequestSpecBuilder();
+        builder.addHeader("Authorization", Authorization);
+        builder.addHeader("Refresh_token", refresh_token);
+        builder.addHeader("Content-Type", "application/json");
+        requestSpecification = builder.build();
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("Jai test")
+    public void jaiTest(){
+        System.out.println(RestAssured.given().when().spec(requestSpecification).request(Method.GET, specificProduct).getBody().prettyPrint());
+    }
+}
+
