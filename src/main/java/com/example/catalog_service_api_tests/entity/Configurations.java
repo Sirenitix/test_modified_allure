@@ -23,5 +23,7 @@ public class Configurations {
 
     private String featureHandbookWithLimitPath;
 
+    private String featureHandbookWithOffsetPath;
+
 
 }
