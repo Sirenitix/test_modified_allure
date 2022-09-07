@@ -646,9 +646,60 @@ class Gw_catalog_v1_products_product_id {
 
     @Test
     @Order(1)
-    @DisplayName("Jai test")
-    public void jaiTest(){
-        System.out.println(RestAssured.given().when().spec(requestSpecification).request(Method.GET, specificProduct).getBody().prettyPrint());
+    @DisplayName("Asserts that the product description is not empty.")
+    public void notEmptyList(){
+        Assert.assertNotNull(RestAssured.given().when().spec(requestSpecification).request(Method.GET, specificProduct).getBody());
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("Asserts that the product description has no pagination.")
+    public void noPagination(){
+        Assert.assertFalse(RestAssured.given().when().spec(requestSpecification).request(Method.GET, specificProduct).getBody().asString().contains("total_pages"));
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("Asserts that the products list has no limit.")
+    public void noLimit(){
+        Assert.assertFalse(RestAssured.given().when().spec(requestSpecification).request(Method.GET, specificProduct).getBody().asString().contains("per_page"));
+    }
+
+    @Test
+    @Order(4)
+    @DisplayName("Asserts that if the parameter is incorrect, the 400 error will occur")
+    public void incorrectParameter() {
+        Assert.assertEquals(RestAssured.given().when().spec(requestSpecification).request(Method.GET, specificProduct + "/@#@&*").getStatusCode(), 404);
     }
 }
+@Slf4j
+class Gw_catalog_v1_products_by_codes {
+    String productByCodes = "https://test4.jmart.kz/gw/catalog/v1/products/by_codes";
+
+    @Autowired
+    protected RequestSpecification requestSpecification;
+    @BeforeEach
+    protected void setup(){
+        RestAssured.baseURI = "https://test4.jmart.kz";
+        Response response = given()
+                .params("login", "dev_test_admin@email.com", "password", "Test_4dmin_Jmart")
+                .post("https://test4.jmart.kz/gw/user/v1/auth/sign-in")
+                .then()
+                .statusCode(201)
+                .extract()
+                .response();
+        String access_token = response.path("data.tokens.auth.token").toString();
+        log.info(access_token + " - access_token");
+        String refresh_token = response.path("data.tokens.refresh.token").toString();
+        String Authorization = "Bearer " + access_token;
+        RequestSpecBuilder builder = new RequestSpecBuilder();
+        builder.addHeader("Authorization", Authorization);
+        builder.addHeader("Refresh_token", refresh_token);
+        builder.addHeader("Content-Type", "application/json");
+        requestSpecification = builder.build();
+    }
+
+}
+
+
 
