@@ -317,16 +317,14 @@ class Gw_catalog_v1_categories_popular {
     @Order(2)
     @DisplayName("Asserts that the list of popular categories has pagination.")
     public void noPagination(){
-        ResponseBody responseBody = RestAssured.given().request(Method.GET).getBody();
-        Assert.assertFalse(responseBody.asString().contains("page="));
+        Assert.assertFalse(RestAssured.given().request(Method.GET).getBody().asString().contains("page="));
     }
 
     @Test
     @Order(3)
     @DisplayName("Asserts that if the parameter is incorrect, the 400 error will occur")
     public void incorrectParameter() {
-        int statusCode = RestAssured.given().request(Method.GET, "item/2110").getStatusCode();
-        Assert.assertEquals(statusCode, 404);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "item/2110").getStatusCode(), 404);
     }
 
     @Test
@@ -348,22 +346,19 @@ class Gw_catalog_v1_categories_root {
     @Order(1)
     @DisplayName("Asserts that the list of root categories is not empty.")
     public void notEmptyList(){
-        ResponseBody responseBody = RestAssured.given().request(Method.GET).getBody();
-        Assert.assertNotNull(responseBody, "Result: Response is not empty");
+        Assert.assertNotNull(RestAssured.given().request(Method.GET).getBody(), "Result: Response is not empty");
     }
     @Test
     @Order(2)
     @DisplayName("Asserts that the list of root categories has pagination.")
     public void noPagination(){
-        ResponseBody responseBody = RestAssured.given().request(Method.GET).getBody();
-        Assert.assertFalse(responseBody.asString().contains("page="));
+        Assert.assertFalse(RestAssured.given().request(Method.GET).getBody().asString().contains("page="));
     }
     @Test
     @Order(3)
     @DisplayName("Asserts that if the parameter is incorrect, the 400 error will occur")
     public void incorrectParameter() {
-        int statusCode = RestAssured.given().request(Method.GET, "item/2110").getStatusCode();
-        Assert.assertEquals(statusCode, 404);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "item/2110").getStatusCode(), 404);
     }
 
     @Test
