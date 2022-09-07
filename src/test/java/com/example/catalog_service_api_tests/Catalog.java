@@ -422,7 +422,7 @@ class Gw_catalog_v1_features_list {
 
     @BeforeEach
     protected void setup(){
-        RestAssured.baseURI = "https://test4.jmart.kz/gw/catalog/v1/features/list";
+        RestAssured.baseURI = configurations.getBaseUri();
         Response response = given()
                 .params("login", configurations.getLogin(), "password", configurations.getPassword())
                 .post(configurations.getSignIn())
@@ -445,7 +445,7 @@ class Gw_catalog_v1_features_list {
     @Order(1)
     @DisplayName("Asserts that the list of root categories is not empty.")
     public void notEmptyList(){
-        ResponseBody responseBody = RestAssured.given().auth().preemptive().basic("dev_test_admin@email.com", "Test_4dmin_Jmart").request(Method.GET).getBody();
+        ResponseBody responseBody = RestAssured.given().when().spec(requestSpecification).request(Method.GET, "https://test4.jmart.kz/gw/catalog/v1/features/list").getBody();
         System.out.println(responseBody.prettyPrint());
 //        Assert.assertNotNull(responseBody, "Result: Response is not empty");
     }
