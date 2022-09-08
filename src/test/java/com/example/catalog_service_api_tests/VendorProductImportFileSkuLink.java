@@ -29,6 +29,13 @@ public class VendorProductImportFileSkuLink extends AbstractTest{
                 .statusCode(200);
         given()
                 .when()
+                .spec(requestSpecification)
+                .get("/gw/catalog/v1/vendor-product-import-file-sku-link")
+                .then()
+                .assertThat()
+                .statusCode(200);
+        given()
+                .when()
                 .param("company_id", 1)
                 .param("file_id", 1)
                 .get("https://test4.jmart.kz/gw/catalog/v1/vendor-product-import-file-sku-link")

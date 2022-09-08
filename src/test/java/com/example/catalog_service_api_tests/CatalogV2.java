@@ -74,7 +74,7 @@ public class CatalogV2 extends AbstractTest{
                 .when()
                 .body("{\n" +
                         "  \"ids\": [\n" +
-                        "    'adf'\n" +
+                        "    \"adf\"\n" +
                         "  ]\n" +
                         "}")
                 .contentType("application/json")
