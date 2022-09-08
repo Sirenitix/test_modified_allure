@@ -16,55 +16,12 @@ import static io.restassured.RestAssured.given;
 
 @Slf4j
 @SpringBootTest
-public abstract class AbstractTest  {
+public abstract class AbstractConfiguration implements ConstsTeamplateFeature   {
+
+    RequestSpecification requestSpecification;
 
     @Autowired
     private Configurations configurations;
-
-    protected RequestSpecification requestSpecification;
-
-    final String WRONG_DATA = "@#@&*";
-
-    final Integer ZERO = 0;
-
-    final Integer ONE = 1;
-
-    final Long RIGHT_PAGE_NUMBER = 7L;
-
-    final Long WRONG_PAGE_NUMBER = 909090909L;
-
-    final Long NEGATIVE_PAGE_NUMBER = -909090909L;
-
-    final String TEST_TEMPLATE_FEATURE_NAME = String.valueOf(new Random().nextInt());
-
-    final String TEST_TEMPLATE_FEATURES = String.valueOf(new Random().nextInt());
-
-    // variable for creating new template(post)
-    // p.s. endpoint: /gw/catalog/v1/category-content-templates-features-handbook
-    final String TEST_TEMPLATE = "{\n" +
-            "  \"template_feature_name\": \"" + TEST_TEMPLATE_FEATURE_NAME + "\",\n" +
-            "  \"features\":[ \"" + TEST_TEMPLATE_FEATURES + "\"]\n" +
-            "}";
-
-   final String TESTTEMPLATE_ONLY_WITH_NAME =  "{\n" +
-                    "  \"template_feature_name\": \"" + TEST_TEMPLATE_FEATURE_NAME + "\" \n" +
-                    "}";
-
-    final String TESTTEMPLATE_WITH_WRONG_NAME =  "{\n" +
-            "  \"template_feature_name\":  909090909  \n" +
-            "}";
-    final String TESTTEMPLATE_ONLY_WITH_FEATURES = "{\n" +
-                    "  \"features\":[ \"" + TEST_TEMPLATE_FEATURES + "\"]\n" +
-                    "}";
-
-    final String TESTTEMPLATE_WITH_WRONG_FEATURES = "{\n" +
-            "  \"template_feature_name\": \"" + TEST_TEMPLATE_FEATURE_NAME + "\",\n" +
-            "  \"features\":[  909090909  ]\n" +
-            "}";
-
-    //
-
-    final String EMPTY_JSON = "{}";
 
 
     @BeforeEach

@@ -22,7 +22,7 @@ import static org.hamcrest.Matchers.*;
 
 
 @Slf4j
-public class GetCategoryContentTemplate extends AbstractTest {
+public class GetCategoryContentTemplate extends AbstractConfiguration {
 
     @Autowired
     private Configurations configurations;
@@ -205,7 +205,7 @@ public class GetCategoryContentTemplate extends AbstractTest {
 
 @Slf4j
 @Nested
-class GetByIdCategoryContentTemplate extends AbstractTest {
+class GetByIdCategoryContentTemplate extends AbstractConfiguration {
 
     @Autowired
     private Configurations configurations;
@@ -254,7 +254,7 @@ class GetByIdCategoryContentTemplate extends AbstractTest {
 
 @Slf4j
 @Nested
-class PostCategoryContentTemplate extends AbstractTest {
+class PostCategoryContentTemplate extends AbstractConfiguration {
 
     @Autowired
     private Configurations configurations;
@@ -365,7 +365,7 @@ class PostCategoryContentTemplate extends AbstractTest {
 
 @Slf4j
 @Nested
-class PutCategoryContentTemplate extends AbstractTest {
+class PutCategoryContentTemplate extends AbstractConfiguration {
 
     @Autowired
     private Configurations configurations;
@@ -469,6 +469,17 @@ class PutCategoryContentTemplate extends AbstractTest {
 
     }
 
+
+
+
+}
+
+@Slf4j
+@Nested
+class DeleteCategoryContentTemplate extends AbstractConfiguration {
+
+    @Autowired
+    private Configurations configurations;
 
 
 }
