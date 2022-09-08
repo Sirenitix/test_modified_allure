@@ -89,6 +89,10 @@ public class VendorProductImport extends AbstractTest {
                 .when()
                 .spec(requestSpecification)
                 .param("Company-Id", 1)
+                .body("{\n" +
+                        "  \"file\": \"string\",\n" +
+                        "  \"company_id\": 0\n" +
+                        "}")
                 .post("/gw/catalog/v1/my/vendor-product-import/mapping")
                 .then()
                 .assertThat()
@@ -99,7 +103,7 @@ public class VendorProductImport extends AbstractTest {
         given()
                 .when()
                 .spec(requestSpecification)
-                .param("Company-Id", 0)
+                .param("Company-Id", 1)
                 .get("/gw/catalog/v1/my/vendor-product-import/process-status")
                 .then()
                 .assertThat()
@@ -200,7 +204,7 @@ public class VendorProductImport extends AbstractTest {
                 .post("/gw/catalog/v1/vendor-product-import/create-child-product")
                 .then()
                 .assertThat()
-                .statusCode(200);
+                .statusCode(201);
     }
     @Test
     public void postImportImport() {
