@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 
-public class VendorProductImportLink extends AbstractTest{
+public class VendorProductImportLink extends AbstractConfiguration{
     @Test
     public void postImportLinkUpsert() {
         given()

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 
-public class CatalogV2 extends AbstractTest{
+public class CatalogV2 extends AbstractConfiguration{
     @Test
     public void postProductsByIds() {
         given()

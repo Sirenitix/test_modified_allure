@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 
-public class VendorProductImportFileSkuLink extends AbstractTest{
+public class VendorProductImportFileSkuLink extends AbstractConfiguration{
     @Test
     public void getMyImportLink() {
         given()

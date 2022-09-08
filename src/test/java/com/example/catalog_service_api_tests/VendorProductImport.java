@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
 @Slf4j
-public class VendorProductImport extends AbstractTest {
+public class VendorProductImport extends AbstractConfiguration {
     @Test
     public void getMyImport() {
         given()
