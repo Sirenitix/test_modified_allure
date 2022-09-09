@@ -10,8 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.*;
-
 import static io.restassured.RestAssured.given;
 
 @Slf4j
@@ -43,6 +41,5 @@ public abstract class AbstractConfiguration implements ConstsTeamplateFeature   
         builder.addHeader("Refresh_token", refresh_token);
         builder.addHeader("Content-Type", "application/json");
         requestSpecification = builder.build();
-
     }
 }

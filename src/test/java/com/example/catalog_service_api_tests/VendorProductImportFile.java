@@ -58,15 +58,7 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .get("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
-        given()
-                .when()
-                .spec(requestSpecification)
-                .param("company_id", -25)
-                .get("/gw/catalog/v1/vendor-product-import-file")
-                .then()
-                .assertThat()
-                .statusCode(404);
+                .statusCode(500);
         given()
                 .when()
                 .spec(requestSpecification)
@@ -74,8 +66,15 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .get("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(404);
-
+                .statusCode(500);
+        given()
+                .when()
+                .spec(requestSpecification)
+                .param("company_id", -25)
+                .get("/gw/catalog/v1/vendor-product-import-file")
+                .then()
+                .assertThat()
+                .statusCode(500);
     }
     @Test
     public void postImportFile(){
@@ -108,14 +107,14 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .post("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
+                .statusCode(500);
         given()
                 .when()
                 .spec(requestSpecification)
                 .post("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
+                .statusCode(500);
         given()
                 .when()
                 .spec(requestSpecification)
@@ -126,7 +125,7 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .post("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
+                .statusCode(500);
         given()
                 .when()
                 .spec(requestSpecification)
@@ -137,7 +136,7 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .post("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
+                .statusCode(500);
         given()
                 .when()
                 .spec(requestSpecification)
@@ -148,7 +147,7 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .post("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
+                .statusCode(500);
         given()
                 .when()
                 .spec(requestSpecification)
@@ -159,7 +158,7 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .post("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
+                .statusCode(500);
         given()
                 .when()
                 .spec(requestSpecification)
@@ -170,7 +169,7 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .post("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
+                .statusCode(500);
         given()
                 .when()
                 .spec(requestSpecification)
@@ -181,7 +180,7 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .post("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
+                .statusCode(500);
         given()
                 .when()
                 .spec(requestSpecification)
@@ -191,7 +190,7 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .post("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
+                .statusCode(500);
         given()
                 .when()
                 .spec(requestSpecification)
@@ -201,7 +200,7 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .post("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
+                .statusCode(500);
     }
     @Test
     public void getImportFileById() {
@@ -247,11 +246,18 @@ public class VendorProductImportFile extends AbstractConfiguration{
     }
     @Test
     public void getImportFileLast() {
-        //This endpoint only return 500.
+         given()
+                 .when()
+                 .spec(requestSpecification)
+                 .param("Company-Id", 1)
+                 .get("/gw/catalog/v1/vendor-product-import-file/last")
+                 .then()
+                 .assertThat()
+                 .statusCode(200);
         given()
                 .when()
                 .spec(requestSpecification)
-                .param("Company_Id", -1)
+                .param("Company-Id", -1)
                 .get("/gw/catalog/v1/vendor-product-import-file/last")
                 .then()
                 .assertThat()
@@ -259,7 +265,7 @@ public class VendorProductImportFile extends AbstractConfiguration{
         given()
                 .when()
                 .spec(requestSpecification)
-                .param("Company_Id", 2.5)
+                .param("Company-Id", 2.5)
                 .get("/gw/catalog/v1/vendor-product-import-file/last")
                 .then()
                 .assertThat()
@@ -267,7 +273,7 @@ public class VendorProductImportFile extends AbstractConfiguration{
         given()
                 .when()
                 .spec(requestSpecification)
-                .param("Company_Id", "ahfgisahf")
+                .param("Company-Id", "ahfgisahf")
                 .get("/gw/catalog/v1/vendor-product-import-file/last")
                 .then()
                 .assertThat()
@@ -281,25 +287,15 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .statusCode(500);
         given()
                 .when()
-                .spec(requestSpecification)
-                .param("Company_Id", 1)
+                .param("Company-Id", 1)
                 .get("https://test4.jmart.kz/gw/catalog/v1/vendor-product-import-file/last")
                 .then()
                 .assertThat()
                 .statusCode(401);
-        given()
-                .when()
-                .spec(requestSpecification)
-                .param("Company-Id", 1)
-                .get("/gw/catalog/v1/vendor-product-import-file/last")
-                .then()
-                .assertThat()
-                .statusCode(200);
 
     }
     @Test
     public void getImportFileLastById() {
-        //This endpoint only returns 404.
         given()
                 .when()
                 .spec(requestSpecification)
