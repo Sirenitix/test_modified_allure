@@ -908,7 +908,7 @@ class Gw_catalog_v1_products_remove_price {
 @Slf4j
 class Gw_catalog_v1_products_status_change_id {
     //What ID? product_id?
-    String productStatusChange = "https://test4.jmart.kz/gw/catalog/v1/products/status-change/84894";
+    String productStatusChange = "https://test4.jmart.kz";
 
     @Autowired
     protected RequestSpecification requestSpecification;
@@ -937,8 +937,6 @@ class Gw_catalog_v1_products_status_change_id {
     @Order(1)
     @DisplayName("Jai test")
     public void jaiTest(){
-        JSONObject requestParams = new JSONObject();
-        requestParams.put("status", "TestDate");
         String status = "newStatus";
         given()
                 .when()
