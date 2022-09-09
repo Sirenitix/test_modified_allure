@@ -2,6 +2,7 @@ package com.example.catalog_service_api_tests;
 
 
 import com.example.catalog_service_api_tests.entity.Configurations;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
@@ -22,7 +23,7 @@ import static org.hamcrest.Matchers.*;
 
 
 @Slf4j
-public class GetCategoryContentTemplate extends AbstractConfiguration {
+public class GetCategoryContentTemplate extends AbstractConfiguration implements ConstsTeamplateFeature {
 
     @Autowired
     private Configurations configurations;
@@ -31,10 +32,7 @@ public class GetCategoryContentTemplate extends AbstractConfiguration {
     @Order(0)
     @DisplayName("check feature handbook's status code and status value")
     public void featureHandbook(){
-        given()
-                .when()
-                .spec(requestSpecification)
-                .get(configurations.getFeatureHandbookPath())
+        getFeatureHandbook()
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.SC_OK)
@@ -59,10 +57,7 @@ public class GetCategoryContentTemplate extends AbstractConfiguration {
     @Order(2)
     @DisplayName("check for existence of pagination")
     public void thereIsAPagination(){
-        given()
-                .when()
-                .spec(requestSpecification)
-                .get(configurations.getFeatureHandbookPath())
+        getFeatureHandbook()
                 .then()
                 .body("data.pagination.page" , is(instanceOf(Integer.class)))
                 .body("data.pagination.items_per_page" , is(instanceOf(Integer.class)));;
@@ -74,12 +69,9 @@ public class GetCategoryContentTemplate extends AbstractConfiguration {
     @Order(3)
     @DisplayName("check for right limit")
     public void rightALimit(){
-        given()
-                .when()
-                .spec(requestSpecification)
-                .get(configurations.getFeatureHandbookWithLimitPath() + RIGHT_PAGE_NUMBER)
+       getFeatureHandbookWithLimit(String.valueOf(RIGHT_NUMBER))
                 .then()
-                .body("data.params.items_per_page" , is(RIGHT_PAGE_NUMBER));
+                .body("data.params.items_per_page" , is(RIGHT_NUMBER));
     }
 
 
@@ -87,10 +79,7 @@ public class GetCategoryContentTemplate extends AbstractConfiguration {
     @Order(4)
     @DisplayName("then the item not exist")
     public void notFound(){
-        given()
-                .when()
-                .spec(requestSpecification)
-                .get(configurations.getFeatureHandbookWithLimitPath() + WRONG_DATA)
+        getFeatureHandbookWithLimit(WRONG_DATA)
                 .then()
                 .assertThat().statusCode(HttpStatus.SC_NOT_FOUND);
     }
@@ -99,10 +88,7 @@ public class GetCategoryContentTemplate extends AbstractConfiguration {
     @Order(5)
     @DisplayName("checking for sorting order")
     public void isSorted(){
-       Response response = given()
-                .when()
-                .spec(requestSpecification)
-                .get(configurations.getFeatureHandbookPath())
+       Response response = getFeatureHandbook()
                 .then()
                 .extract()
                 .response();
@@ -123,10 +109,7 @@ public class GetCategoryContentTemplate extends AbstractConfiguration {
     @Order(6)
     @DisplayName("check for emptiness of list when param is wrong")
     public void emptyListThenOffsetIsWrong(){
-        Response response = given()
-                .when()
-                .spec(requestSpecification)
-                .get(configurations.getFeatureHandbookWithOffsetPath() + WRONG_PAGE_NUMBER)
+        Response response = getFeatureHandbookWithOffset(WRONG_NUMBER)
                 .then()
                 .extract()
                 .response();
@@ -144,10 +127,7 @@ public class GetCategoryContentTemplate extends AbstractConfiguration {
     @Order(7)
     @DisplayName("return first page when offset is negative")
     public void fromFirstWhenOffsetIsNegative(){
-        Response response = given()
-                .when()
-                .spec(requestSpecification)
-                .get(configurations.getFeatureHandbookWithOffsetPath() + WRONG_PAGE_NUMBER)
+        Response response = getFeatureHandbookWithOffset(WRONG_NUMBER)
                 .then()
                 .extract()
                 .response();
@@ -164,10 +144,7 @@ public class GetCategoryContentTemplate extends AbstractConfiguration {
     @Order(8)
     @DisplayName("request with wrong offset should return 422")
     public void offsetParamWrong(){
-        given()
-                .when()
-                .spec(requestSpecification)
-                .get(configurations.getFeatureHandbookWithOffsetPath() + WRONG_DATA)
+        getFeatureHandbookWithOffset(WRONG_DATA)
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
     }
@@ -176,10 +153,7 @@ public class GetCategoryContentTemplate extends AbstractConfiguration {
     @Order(9)
     @DisplayName("request with wrong limit should return 422")
     public void limitParamWrong(){
-        given()
-                .when()
-                .spec(requestSpecification)
-                .get(configurations.getFeatureHandbookWithLimitPath() + WRONG_DATA)
+        getFeatureHandbookWithLimit(WRONG_DATA)
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
     }
@@ -189,10 +163,7 @@ public class GetCategoryContentTemplate extends AbstractConfiguration {
     @Order(10)
     @DisplayName("return first page when page number is negative")
     public void negativeOffset(){
-        given()
-                .when()
-                .spec(requestSpecification)
-                .get(configurations.getFeatureHandbookWithOffsetPath() + NEGATIVE_PAGE_NUMBER)
+        getFeatureHandbookWithOffset(NEGATIVE_NUMBER)
                 .then()
                 .body("data.pagination.page" , is(ONE));
     }
@@ -205,7 +176,7 @@ public class GetCategoryContentTemplate extends AbstractConfiguration {
 
 @Slf4j
 @Nested
-class GetByIdCategoryContentTemplate extends AbstractConfiguration {
+class GetByIdCategoryContentTemplate extends AbstractConfiguration implements ConstsTeamplateFeature {
 
     @Autowired
     private Configurations configurations;
@@ -215,10 +186,7 @@ class GetByIdCategoryContentTemplate extends AbstractConfiguration {
     @Order(0)
     @DisplayName("get by right id checking for correctness")
     public void dataCheck(){
-        given()
-                .when()
-                .spec(requestSpecification)
-                .get(configurations.getFeatureHandbookPath() + ONE)
+        getFeatureHandbookById(ONE)
                 .then()
                 .body("success" , is(Boolean.TRUE))
                 .body("data.id", is(ONE));
@@ -228,10 +196,7 @@ class GetByIdCategoryContentTemplate extends AbstractConfiguration {
     @Order(1)
     @DisplayName("return 422 if id is incorrect")
     public void invalidId(){
-        given()
-                .when()
-                .spec(requestSpecification)
-                .get(configurations.getFeatureHandbookPath() + WRONG_DATA)
+        getFeatureHandbookById(WRONG_DATA)
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
     }
@@ -240,10 +205,7 @@ class GetByIdCategoryContentTemplate extends AbstractConfiguration {
     @Order(2)
     @DisplayName("return 404 if id is not exist")
     public void notExist(){
-        given()
-                .when()
-                .spec(requestSpecification)
-                .get(configurations.getFeatureHandbookPath() + WRONG_PAGE_NUMBER)
+        getFeatureHandbookById(WRONG_NUMBER)
                 .then()
                 .statusCode(HttpStatus.SC_NOT_FOUND);
     }
@@ -254,7 +216,7 @@ class GetByIdCategoryContentTemplate extends AbstractConfiguration {
 
 @Slf4j
 @Nested
-class PostCategoryContentTemplate extends AbstractConfiguration {
+class PostCategoryContentTemplate extends AbstractConfiguration implements ConstsTeamplateFeature {
 
     @Autowired
     private Configurations configurations;
@@ -263,9 +225,7 @@ class PostCategoryContentTemplate extends AbstractConfiguration {
     @Order(0)
     @DisplayName("create template with name and features check for name and features")
     public void create(){
-        given().log().all()
-                .when()
-                .spec(requestSpecification)
+        specification()
                 .body(TEST_TEMPLATE)
                 .post(configurations.getFeatureHandbookPath())
                 .then()
@@ -278,10 +238,8 @@ class PostCategoryContentTemplate extends AbstractConfiguration {
     @Order(1)
     @DisplayName("create template only with name check for status")
     public void onlyName(){
-        given().log().all()
-                .when()
-                .spec(requestSpecification)
-                .body(TESTTEMPLATE_ONLY_WITH_NAME)
+        specification()
+                .body(TEST_TEMPLATE_ONLY_WITH_NAME)
                 .post(configurations.getFeatureHandbookPath())
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
@@ -292,10 +250,8 @@ class PostCategoryContentTemplate extends AbstractConfiguration {
     @Order(2)
     @DisplayName("create template only with name check for status")
     public void onlyFeatures(){
-        given().log().all()
-                .when()
-                .spec(requestSpecification)
-                .body(TESTTEMPLATE_ONLY_WITH_FEATURES)
+        specification()
+                .body(TEST_TEMPLATE_ONLY_WITH_FEATURES)
                 .post(configurations.getFeatureHandbookPath())
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
@@ -307,10 +263,8 @@ class PostCategoryContentTemplate extends AbstractConfiguration {
     @Order(3)
     @DisplayName("create template with wrong name check for status")
     public void wrongBodyParamName(){
-        given().log().all()
-                .when()
-                .spec(requestSpecification)
-                .body(TESTTEMPLATE_WITH_WRONG_NAME)
+        specification()
+                .body(TEST_TEMPLATE_WITH_WRONG_NAME)
                 .post(configurations.getFeatureHandbookPath())
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
@@ -321,10 +275,8 @@ class PostCategoryContentTemplate extends AbstractConfiguration {
     @Order(4)
     @DisplayName("create template with integer features check for status 422")
     public void wrongBodyParamFeatures(){
-        given().log().all()
-                .when()
-                .spec(requestSpecification)
-                .body(TESTTEMPLATE_WITH_WRONG_FEATURES)
+        specification()
+                .body(TEST_TEMPLATE_WITH_WRONG_FEATURES)
                 .post(configurations.getFeatureHandbookPath())
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
@@ -335,9 +287,7 @@ class PostCategoryContentTemplate extends AbstractConfiguration {
     @Order(5)
     @DisplayName("create template with integer features check for status 422")
     public void withoutAnyParameter(){
-        given().log().all()
-                .when()
-                .spec(requestSpecification)
+        specification()
                 .post(configurations.getFeatureHandbookPath())
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
@@ -348,9 +298,7 @@ class PostCategoryContentTemplate extends AbstractConfiguration {
     @Order(6)
     @DisplayName("create template with integer features check for status 422")
     public void emptyJson(){
-        given().log().all()
-                .when()
-                .spec(requestSpecification)
+        specification()
                 .body(EMPTY_JSON)
                 .post(configurations.getFeatureHandbookPath())
                 .then()
@@ -365,7 +313,7 @@ class PostCategoryContentTemplate extends AbstractConfiguration {
 
 @Slf4j
 @Nested
-class PutCategoryContentTemplate extends AbstractConfiguration {
+class PutCategoryContentTemplate extends AbstractConfiguration implements ConstsTeamplateFeature {
 
     @Autowired
     private Configurations configurations;
@@ -374,9 +322,7 @@ class PutCategoryContentTemplate extends AbstractConfiguration {
     @Order(0)
     @DisplayName("update template with name and features check for name and features")
     public void update(){
-        given().log().all()
-                .when()
-                .spec(requestSpecification)
+        specification()
                 .body(TEST_TEMPLATE)
                 .put(configurations.getFeatureHandbookPath() + ONE)
                 .then()
@@ -389,10 +335,8 @@ class PutCategoryContentTemplate extends AbstractConfiguration {
     @Order(1)
     @DisplayName("update template only with name check for status")
     public void updateOnlyName(){
-        given().log().all()
-                .when()
-                .spec(requestSpecification)
-                .body(TESTTEMPLATE_ONLY_WITH_NAME)
+        specification()
+                .body(TEST_TEMPLATE_ONLY_WITH_NAME)
                 .put(configurations.getFeatureHandbookPath() + ONE)
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
@@ -403,10 +347,8 @@ class PutCategoryContentTemplate extends AbstractConfiguration {
     @Order(2)
     @DisplayName("update template only with name check for status")
     public void updateOnlyFeatures(){
-        given().log().all()
-                .when()
-                .spec(requestSpecification)
-                .body(TESTTEMPLATE_ONLY_WITH_FEATURES)
+        specification()
+                .body(TEST_TEMPLATE_ONLY_WITH_FEATURES)
                 .put(configurations.getFeatureHandbookPath() + ONE)
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
@@ -418,10 +360,8 @@ class PutCategoryContentTemplate extends AbstractConfiguration {
     @Order(3)
     @DisplayName("update template with wrong name check for status")
     public void wrongBodyParamName(){
-        given().log().all()
-                .when()
-                .spec(requestSpecification)
-                .body(TESTTEMPLATE_WITH_WRONG_NAME)
+        specification()
+                .body(TEST_TEMPLATE_WITH_WRONG_NAME)
                 .put(configurations.getFeatureHandbookPath() + ONE)
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
@@ -432,10 +372,8 @@ class PutCategoryContentTemplate extends AbstractConfiguration {
     @Order(4)
     @DisplayName("update template with integer features check for status 422")
     public void wrongBodyParamFeatures(){
-        given().log().all()
-                .when()
-                .spec(requestSpecification)
-                .body(TESTTEMPLATE_WITH_WRONG_FEATURES)
+        specification()
+                .body(TEST_TEMPLATE_WITH_WRONG_FEATURES)
                 .put(configurations.getFeatureHandbookPath() + ONE)
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
@@ -446,9 +384,7 @@ class PutCategoryContentTemplate extends AbstractConfiguration {
     @Order(5)
     @DisplayName("update template with integer features check for status 422")
     public void withoutAnyParameter(){
-        given().log().all()
-                .when()
-                .spec(requestSpecification)
+        specification()
                 .put(configurations.getFeatureHandbookPath() + ONE)
                 .then()
                 .statusCode(HttpStatus.SC_UNPROCESSABLE_ENTITY);
@@ -459,9 +395,7 @@ class PutCategoryContentTemplate extends AbstractConfiguration {
     @Order(6)
     @DisplayName("update template with integer features check for status 422")
     public void emptyJson(){
-        given().log().all()
-                .when()
-                .spec(requestSpecification)
+        specification()
                 .body(EMPTY_JSON)
                 .put(configurations.getFeatureHandbookPath() + ONE)
                 .then()
@@ -476,10 +410,89 @@ class PutCategoryContentTemplate extends AbstractConfiguration {
 
 @Slf4j
 @Nested
-class DeleteCategoryContentTemplate extends AbstractConfiguration {
+class DeleteCategoryContentTemplate extends AbstractConfiguration implements ConstsTeamplateFeature {
 
-    @Autowired
-    private Configurations configurations;
+
+    @Test
+    @Order(0)
+    @DisplayName("delete existing object")
+    public void delete(){
+
+        String entityIdForDeletion = String.valueOf(createRandomEntity().getInt("data.id"));
+
+        deleteById(entityIdForDeletion)
+                .then()
+                .statusCode(HttpStatus.SC_OK)
+                .body("success", is(Boolean.TRUE))
+                .body("data", is(hasSize(0)));;
+
+    }
+
+
+    @Test
+    @Order(1)
+    @DisplayName("delete existing object second time")
+    public void deleteAlreadyDeleted(){
+
+        String entityIdForDeletion = String.valueOf(
+                createRandomEntity().getInt("data.id"));
+        Response responseAfterFirstDeletion = deleteById(entityIdForDeletion);
+
+        responseAfterFirstDeletion.then().statusCode(HttpStatus.SC_OK)
+                .body("success", is(Boolean.TRUE))
+                .body("data", is(hasSize(0)));
+
+        Response responseAfterSecondDeletion = deleteById(entityIdForDeletion);
+
+        responseAfterSecondDeletion.then()
+                .statusCode(HttpStatus.SC_NOT_FOUND);
+
+    }
+
+
+    @Test
+    @Order(2)
+    @DisplayName("delete not existing object")
+    public void deleteByIdThatNotExist(){
+
+        deleteById(WRONG_NUMBER).then()
+                .statusCode(HttpStatus.SC_NOT_FOUND);
+
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("delete not existing object")
+    public void deleteByInvalidId(){
+
+        deleteById(WRONG_NUMBER).then()
+                .statusCode(HttpStatus.SC_NOT_FOUND);
+
+    }
+
+
+    @Test
+    @Order(4)
+    @DisplayName("delete existing object and add again")
+    public void deleteByIdAndCreateSameObject(){
+
+        JsonPath entityForDeletion = createRandomEntity();
+        deleteById(String.valueOf(entityForDeletion.getInt("data.id")));
+        String featureName = entityForDeletion.getString("data.template_feature_name");
+        String features = (String) entityForDeletion.getList("data.features").get(0);
+        Integer id = entityForDeletion.getInt("data.id");
+        Response recreateEntity = createEntity(featureName, features);
+        recreateEntity
+                .then()
+                .statusCode(HttpStatus.SC_CREATED)
+                .body("success", is(Boolean.TRUE))
+                .body("data.template_feature_name", is(featureName))
+                .body("data.features[0]", is(features))
+                .body("data.id", is(not(id)));
+
+    }
+
+
 
 
 }
