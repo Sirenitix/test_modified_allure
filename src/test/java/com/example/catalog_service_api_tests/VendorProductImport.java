@@ -88,7 +88,6 @@ public class VendorProductImport extends AbstractConfiguration {
         given()
                 .when()
                 .spec(requestSpecification)
-                .param("Company-Id", 1)
                 .body("{\n" +
                         "  \"file\": \"string\",\n" +
                         "  \"company_id\": 0\n" +
