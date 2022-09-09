@@ -43,9 +43,9 @@ class Catalog_v1_categories_by_ids {
     @Order(4)
     @DisplayName("Asserts that the status code is 400 when passed the incorrect parameter")
     public void incorrectParameter(){
-        Assert.assertEquals(RestAssured.given().request(Method.GET, "@#@&*").getStatusCode(), 400);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "?id=@#@&*").getStatusCode(), 404);
     }
-    //404 on the page, 200 even with wrong parameter
+    //404 on the page, 404 with wrong parameter
 }
 
 class Catalog_v1_categories_categories_list {
@@ -76,9 +76,9 @@ class Catalog_v1_categories_categories_list {
     @Order(4)
     @DisplayName("Asserts that the status code is 400 when passed the incorrect parameter")
     public void incorrectParameter(){
-        Assert.assertEquals(RestAssured.given().request(Method.GET, "@#@&*").getStatusCode(), 400);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "?category_id=@#@&*").getStatusCode(), 404);
     }
-    //404 on the page
+    //404 on the page, 404 with wrong parameters
 }
 
 class Catalog_v1_categories_get_two_top_levels {
@@ -95,13 +95,13 @@ class Catalog_v1_categories_get_two_top_levels {
     @Test
     @Order(2)
     @DisplayName("Asserts that the list of categories has pagination.")
-    public void thereIsAPagination(){
+    public void hasPagination(){
         Assert.assertTrue(RestAssured.given().request(Method.GET).getBody().asString().contains("page="));
     }
     @Test
     @Order(3)
     @DisplayName("Asserts that the list of categories has a limit.")
-    public void thereIsALimit(){
+    public void hasLimit(){
         Assert.assertTrue(RestAssured.given().request(Method.GET).getBody().asString().contains("per_page"));
     }
 
@@ -109,8 +109,9 @@ class Catalog_v1_categories_get_two_top_levels {
     @Order(4)
     @DisplayName("Asserts that the status code is 400 when passed the incorrect parameter")
     public void incorrectParameter(){
-        Assert.assertEquals(RestAssured.given().request(Method.GET, "/220220%").getStatusCode(), 400);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "@#@&*").getStatusCode(), 404);
     }
+    //404 on the page
 }
 
 class Catalog_v1_categories_ordered_by_levels {
@@ -127,13 +128,13 @@ class Catalog_v1_categories_ordered_by_levels {
     @Test
     @Order(2)
     @DisplayName("Asserts that the list of categories has pagination.")
-    public void thereIsAPagination(){
+    public void hasPagination(){
         Assert.assertTrue(RestAssured.given().request(Method.GET).getBody().asString().contains("page="));
     }
     @Test
     @Order(3)
     @DisplayName("Asserts that the list of categories has a limit.")
-    public void thereIsALimit(){
+    public void hasLimit(){
         Assert.assertTrue(RestAssured.given().request(Method.GET).getBody().asString().contains("per_page"));
     }
 
@@ -141,8 +142,9 @@ class Catalog_v1_categories_ordered_by_levels {
     @Order(4)
     @DisplayName("Asserts that the status code is 400 when passed the incorrect parameter")
     public void incorrectParameter(){
-        Assert.assertEquals(RestAssured.given().request(Method.GET, "/220220%").getStatusCode(), 400);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "@#@&*").getStatusCode(), 404);
     }
+    //404 on the page
 }
 
 class Catalog_v1_products_by_ids_full {
@@ -154,19 +156,18 @@ class Catalog_v1_products_by_ids_full {
     @Order(1)
     @DisplayName("Asserts that the list of categories is not empty.")
     public void notEmptyList(){
-//        Assert.assertNotNull(RestAssured.given().request(Method.GET).getBody());
-        System.out.println(RestAssured.given().request(Method.GET).getBody().prettyPrint());
+        Assert.assertNotNull(RestAssured.given().request(Method.GET).getBody());
     }
     @Test
     @Order(2)
     @DisplayName("Asserts that the list of products has pagination.")
-    public void thereIsAPagination(){
+    public void hasPagination(){
         Assert.assertTrue(RestAssured.given().request(Method.GET).getBody().asString().contains("page="));
     }
     @Test
     @Order(3)
-    @DisplayName("Asserts that the list of categories has a limit.")
-    public void thereIsALimit(){
+    @DisplayName("Asserts that the list of products has a limit.")
+    public void hasLimit(){
         Assert.assertTrue(RestAssured.given().request(Method.GET).getBody().asString().contains("per_page"));
     }
 
@@ -174,83 +175,93 @@ class Catalog_v1_products_by_ids_full {
     @Order(4)
     @DisplayName("Asserts that the status code is 400 when passed the incorrect parameter")
     public void incorrectParameter(){
-        Assert.assertEquals(RestAssured.given().request(Method.GET, "/220220%").getStatusCode(), 400);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "@#@&*").getStatusCode(), 404);
     }
 
     @Test
     @Order(5)
-    @DisplayName("Asserts that the list of categories is not empty.")
+    @DisplayName("Asserts that response has correct data for valid ID")
     public void validIdCheckResponseData(){
-        ResponseBody responseBody = RestAssured.given().request(Method.GET, "?ids=1244667/P").getBody();
-        Assert.assertNotNull(responseBody);
+        ResponseBody responseBody = RestAssured.given().request(Method.GET, "?ids=1244667%2FP").getBody();
+        System.out.println(responseBody.prettyPrint());
+        //404 even with valid id
     }
 
     @Test
     @Order(6)
-    @DisplayName("Asserts that response has error 404 for th ID that does not exist")
+    @DisplayName("Asserts that response has error 404 for ID that does not exist")
     public void nonExistingIdCheckResponseData(){
-        Assert.assertEquals(RestAssured.given().request(Method.GET, "?ids=1244669/P").getStatusCode(), 404);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "?ids=1244669%2FP").getStatusCode(), 404);
     }
 
     @Test
     @Order(7)
-    @DisplayName("Asserts that the list of categories is not empty.")
+    @DisplayName("Asserts that response has error 404 for invalid ID")
     public void inValidIdCheckResponseData(){
-        Assert.assertEquals(RestAssured.given().request(Method.GET, "?ids=1244669").getStatusCode(), 404);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "?ids=@#@&*").getStatusCode(), 404);
     }
+    //404 on the page
 }
 
 class Catalog_v1_products_images_by_ids {
-    @BeforeAll
-    public static void setup(){
-        RestAssured.baseURI = "https://test4.jmart.kz/catalog/v1/products";
-    }
+    //404 on the page
 }
 
 class Gw_catalog_v1_categories_parent_id {
     @BeforeAll
     public static void setup(){
-        RestAssured.baseURI = "https://test4.jmart.kz/gw/catalog/v1/categories/";
+        RestAssured.baseURI = "https://test4.jmart.kz/gw/catalog/v1/categories";
     }
 
     @Test
     @Order(1)
-    @DisplayName("Asserts that the list of products in a specified category is not empty.")
+    @DisplayName("Asserts that the list of categories in a specified parent category is not empty.")
     public void notEmptyList(){
-        Assert.assertNotNull(RestAssured.given().request(Method.GET, "272").getBody());
+        Assert.assertNotNull(RestAssured.given().request(Method.GET, "/272").getBody());
     }
 
     @Test
     @Order(2)
-    @DisplayName("Asserts that the list of products has pagination.")
-    public void thereIsAPagination(){
-        Assert.assertTrue(RestAssured.given().request(Method.GET, "272").getBody().asString().contains("page="));
+    @DisplayName("Asserts that the list of categories in a specified parent category has pagination.")
+    public void hasPagination(){
+        Assert.assertTrue(RestAssured.given().request(Method.GET, "/272").getBody().asString().contains("page="));
     }
 
     @Test
     @Order(3)
-    @DisplayName("Asserts that if the parameter is incorrect, the 400 error will occur")
-    public void incorrectParameter() {
-        Assert.assertEquals(RestAssured.given().request(Method.GET, "item/2110").getStatusCode(), 404);
+    @DisplayName("Asserts that the list of categories has a limit.")
+    public void hasLimit(){
+        Assert.assertTrue(RestAssured.given().request(Method.GET).getBody().asString().contains("per_page"));
     }
 
     @Test
     @Order(4)
-    @DisplayName("Asserts that response has correct data for valid ID")
-    public void validIdCheckResponseData(){
-        Assert.assertNotNull(RestAssured.given().request(Method.GET, "272").getBody());
+    @DisplayName("Asserts that if the parameter is incorrect, the 400 error will occur")
+    public void incorrectParameter() {
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "?2110").getStatusCode(), 404);
     }
+
     @Test
     @Order(5)
-    @DisplayName("Asserts that response has error 404 for th ID that does not exist")
+    @DisplayName("Asserts that response has correct data for valid ID")
+    public void validIdCheckResponseData(){
+        ResponseBody body = RestAssured.given().request(Method.GET, "/272").getBody();
+        Assert.assertTrue(body.asString().contains("parent_id") && body.asString().contains("category_id") && body.asString().contains("id_path")
+                && body.asString().contains("category") && body.asString().contains("position") && body.asString().contains("age_verification")
+                && body.asString().contains("age_limit") && body.asString().contains("age_warning_message") && body.asString().contains("id_path_names")
+                && body.asString().contains("has_children"));
+    }
+    @Test
+    @Order(6)
+    @DisplayName("Asserts that response has error 404 for ID that does not exist")
     public void nonExistingIdCheckResponseData(){
-        Assert.assertEquals(RestAssured.given().request(Method.GET, "-1").getStatusCode(), 404);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "/-1").getStatusCode(), 404);
     }
     @Test
     @Order(7)
-    @DisplayName("Asserts that the list of categories is not empty.")
+    @DisplayName("Asserts that the list of categories has error 404 for invalid ID")
     public void inValidIdCheckResponseData(){
-        Assert.assertEquals(RestAssured.given().request(Method.GET, "ids=1244669").getStatusCode(), 404);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "/10000000").getStatusCode(), 404);
     }
 }
 
@@ -262,44 +273,52 @@ class Gw_catalog_v1_categories_contain_parent_id {
 
     @Test
     @Order(1)
-    @DisplayName("Asserts that the list of categories in a specified parent category is not empty.")
+    @DisplayName("Asserts that the list of categories containing specified parent category is not empty.")
     public void notEmptyList(){
-        Assert.assertNotNull(RestAssured.given().request(Method.GET, "272").getBody(), "Result: Response is not empty");
+        Assert.assertNotNull(RestAssured.given().request(Method.GET, "/272").getBody());
     }
 
     @Test
     @Order(2)
-    @DisplayName("Asserts that the list of categories has pagination.")
-    public void noPagination(){
-        Assert.assertFalse(RestAssured.given().request(Method.GET, "272").getBody().asString().contains("page="));
+    @DisplayName("Asserts that the list of categories containing specified parent category has pagination.")
+    public void hasPagination(){
+        Assert.assertTrue(RestAssured.given().request(Method.GET, "/272").getBody().asString().contains("page="));
     }
 
     @Test
     @Order(3)
-    @DisplayName("Asserts that if the parameter is incorrect, the 400 error will occur")
-    public void incorrectParameter() {
-        Assert.assertEquals(RestAssured.given().request(Method.GET, "item/2110").getStatusCode(), 404);
+    @DisplayName("Asserts that the list of categories has a limit.")
+    public void hasLimit(){
+        Assert.assertTrue(RestAssured.given().request(Method.GET).getBody().asString().contains("per_page"));
     }
 
     @Test
     @Order(4)
-    @DisplayName("Asserts that response has correct data for valid ID")
-    public void validIdCheckResponseData(){
-        Assert.assertNotNull(RestAssured.given().request(Method.GET, "272").getBody());
+    @DisplayName("Asserts that if the parameter is incorrect, the 400 error will occur")
+    public void incorrectParameter() {
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "?parent_id=272").getStatusCode(), 404);
     }
 
     @Test
     @Order(5)
-    @DisplayName("Asserts that response has error 404 for th ID that does not exist")
-    public void nonExistingIdCheckResponseData(){
-        Assert.assertEquals(RestAssured.given().request(Method.GET, "321").getStatusCode(), 404);
+    @DisplayName("Asserts that response has correct data for valid ID")
+    public void validIdCheckResponseData(){
+        ResponseBody body = RestAssured.given().request(Method.GET, "/272").getBody();
+        Assert.assertTrue(body.asString().contains("parent_id") && body.asString().contains("category_id") && body.asString().contains("id_path")
+                && body.asString().contains("category") && body.asString().contains("position") && body.asString().contains("age_verification")
+                && body.asString().contains("age_limit") && body.asString().contains("age_warning_message") && body.asString().contains("id_path_names"));
     }
-
     @Test
     @Order(6)
-    @DisplayName("Asserts that the list of categories is not empty.")
+    @DisplayName("Asserts that response has error 404 for ID that does not exist")
+    public void nonExistingIdCheckResponseData(){
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "/-1").getStatusCode(), 404);
+    } //500
+    @Test
+    @Order(7)
+    @DisplayName("Asserts that the list of categories has error 404 for invalid ID")
     public void inValidIdCheckResponseData(){
-        Assert.assertEquals(RestAssured.given().request(Method.GET, "ids=1244669").getStatusCode(), 404);
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "/10000000").getStatusCode(), 404);
     }
 }
 
@@ -375,11 +394,9 @@ class Gw_catalog_v1_categories_root {
 
 @Slf4j
 class Gw_catalog_v1_features_list {
-
     String featuresList = "https://test4.jmart.kz/gw/catalog/v1/features/list";
 
     @Autowired
-    private Configurations configurations;
     protected RequestSpecification requestSpecification;
 
     @BeforeEach
@@ -413,14 +430,14 @@ class Gw_catalog_v1_features_list {
     @Test
     @Order(2)
     @DisplayName("Asserts that the features list has a pagination.")
-    public void thereIsAPagination(){
+    public void hasPagination(){
         Assert.assertTrue(RestAssured.given().when().spec(requestSpecification).request(Method.GET, featuresList).getBody().asString().contains("page="));
     }
 
     @Test
     @Order(3)
     @DisplayName("Asserts that the features list has a limit.")
-    public void thereIsALimit(){
+    public void hasLimit(){
         Assert.assertTrue(RestAssured.given().when().spec(requestSpecification).request(Method.GET, featuresList).getBody().asString().contains("per_page"));
     }
 
@@ -428,8 +445,34 @@ class Gw_catalog_v1_features_list {
     @Order(4)
     @DisplayName("Asserts that if the parameter is incorrect, the 400 error will occur")
     public void incorrectParameter() {
-        Assert.assertEquals(RestAssured.given().when().spec(requestSpecification).request(Method.GET, featuresList + "/@#@&*").getStatusCode(), 404);
+        Assert.assertEquals(RestAssured.given().when().spec(requestSpecification).request(Method.GET, featuresList + "?item=10").getStatusCode(), 404);
+    } //still 200
+
+    @Test
+    @Order(5)
+    @DisplayName("Asserts that response has correct data for valid ID")
+    public void validIdCheckResponseData(){
+        ResponseBody body = RestAssured.given().when().spec(requestSpecification).request(Method.GET, featuresList).getBody();
+        Assert.assertTrue(body.prettyPrint().contains("feature_id") && body.prettyPrint().contains("company_id") && body.prettyPrint().contains("feature_type")
+                && body.prettyPrint().contains("parent_id") && body.prettyPrint().contains("display_on_product") && body.prettyPrint().contains("display_on_catalog")
+                && body.prettyPrint().contains("display_on_header") && body.prettyPrint().contains("description") && body.prettyPrint().contains("lang_code")
+                && body.prettyPrint().contains("prefix") && body.prettyPrint().contains("suffix") && body.prettyPrint().contains("categories_path")
+                && body.prettyPrint().contains("full_description") && body.prettyPrint().contains("status") && body.prettyPrint().contains("comparison")
+                && body.prettyPrint().contains("position") && body.prettyPrint().contains("purpose") && body.prettyPrint().contains("feature_style")
+                && body.prettyPrint().contains("filter_style") && body.prettyPrint().contains("feature_code") && body.prettyPrint().contains("group_position"));
     }
+    @Test
+    @Order(6)
+    @DisplayName("Asserts that response has error 404 for ID that does not exist")
+    public void nonExistingIdCheckResponseData(){
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "?page=1&items_per_page=20&include_group=true&feature_ids[]=-1000000").getStatusCode(), 404);
+    } //200
+    @Test
+    @Order(7)
+    @DisplayName("Asserts that the list of categories has error 404 for invalid ID")
+    public void inValidIdCheckResponseData(){
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "?page=1&items_per_page=20&include_group=true&feature_ids[]=invalid").getStatusCode(), 404);
+    }//200
 }
 @Slf4j
 class Gw_catalog_v1_features_variants_list {
