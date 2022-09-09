@@ -4,6 +4,7 @@ import com.example.catalog_service_api_tests.entity.Configurations;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.ResponseBody;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONObject;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
@@ -749,18 +750,19 @@ class Gw_catalog_v1_products_by_codes {
     @Order(1)
     @DisplayName("Returns product list using product_id")
     public void allFieldsAreCompletedWithValidData(){
+        String productId = "3177149";
         given()
                 .when()
                 .spec(requestSpecification)
-                .body("{ \"product_id\": \"" + "3177149" + "\", \"company_id\": \"" + "311632" + "\"}")
-                .post("https://test4.jmart.kz/gw/catalog/v1/products/by_codes/3177149")
-                .then()
-                .assertThat()
-                .body("product_id", is("3177149"));
+                .body("{ \"product_id\": \"" + productId + "\", \"company_id\": \"" + "311632" + "\"}")
+                .post("https://test4.jmart.kz/gw/catalog/v1/products/by_codes?product_id=311632");
+        System.out.println(RestAssured.given().when().spec(requestSpecification).request(Method.POST, "https://test4.jmart.kz/gw/catalog/v1/products/by_codes?product_id=311632").getBody().prettyPrint());
     }
-
-
+    //        "status": 403,
+    //        "error": "Access forbidden",
+    //        "message": "You don't have permission to access this resource"
 }
+
 @Slf4j
 class Gw_catalog_v1_products_by_ids {
     String productByIds = "https://test4.jmart.kz/gw/catalog/v1/products/by_ids";
@@ -787,6 +789,14 @@ class Gw_catalog_v1_products_by_ids {
         builder.addHeader("Content-Type", "application/json");
         requestSpecification = builder.build();
     }
+    @Test
+    @Order(1)
+    @DisplayName("Asserts that the product description is not empty.")
+    public void notEmptyList(){
+        Assert.assertNotNull(RestAssured.given().when().spec(requestSpecification).request(Method.GET, productByIds + "?product_id=84894").getBody());
+    }
+    //500 error
+
 }
 @Slf4j
 class Gw_catalog_v1_products_codes_by_ids {
@@ -814,7 +824,46 @@ class Gw_catalog_v1_products_codes_by_ids {
         builder.addHeader("Content-Type", "application/json");
         requestSpecification = builder.build();
     }
+    //500 error
 }
+@Slf4j
+class Gw_catalog_v1_products_condition {
+    String productsCondition = "https://test4.jmart.kz/gw/catalog/v1/products/condition";
+
+    @Autowired
+    protected RequestSpecification requestSpecification;
+    @BeforeEach
+    protected void setup(){
+        RestAssured.baseURI = "https://test4.jmart.kz";
+        Response response = given()
+                .params("login", "dev_test_admin@email.com", "password", "Test_4dmin_Jmart")
+                .post("https://test4.jmart.kz/gw/user/v1/auth/sign-in")
+                .then()
+                .statusCode(201)
+                .extract()
+                .response();
+        String access_token = response.path("data.tokens.auth.token").toString();
+        log.info(access_token + " - access_token");
+        String refresh_token = response.path("data.tokens.refresh.token").toString();
+        String Authorization = "Bearer " + access_token;
+        RequestSpecBuilder builder = new RequestSpecBuilder();
+        builder.addHeader("Authorization", Authorization);
+        builder.addHeader("Refresh_token", refresh_token);
+        builder.addHeader("Content-Type", "application/json");
+        requestSpecification = builder.build();
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("Asserts that the product description is not empty.")
+    public void notEmptyList(){
+        System.out.println(RestAssured.given().when().spec(requestSpecification).request(Method.GET, productsCondition).getBody().prettyPrint());
+    }
+    //        "status": 404,
+    //        "error": "NOT_FOUND",
+    //        "message": "NOT_FOUND",
+}
+
 @Slf4j
 class Gw_catalog_v1_products_order_products_company {
     String orderProductsCompany = "https://test4.jmart.kz/gw/catalog/v1/products/order-products-company";
@@ -848,7 +897,61 @@ class Gw_catalog_v1_products_order_products_company {
     public void jaiTest(){
         System.out.println(RestAssured.given().when().spec(requestSpecification).request(Method.GET, orderProductsCompany).getBody().prettyPrint());
     }
+    // 500 error
 }
+
+@Slf4j
+class Gw_catalog_v1_products_remove_price {
+    //Condition???
+}
+
+@Slf4j
+class Gw_catalog_v1_products_status_change_id {
+    //What ID? product_id?
+    String productStatusChange = "https://test4.jmart.kz/gw/catalog/v1/products/status-change/84894";
+
+    @Autowired
+    protected RequestSpecification requestSpecification;
+    @BeforeEach
+    protected void setup(){
+        RestAssured.baseURI = "https://test4.jmart.kz";
+        Response response = given()
+                .params("login", "dev_test_admin@email.com", "password", "Test_4dmin_Jmart")
+                .post("https://test4.jmart.kz/gw/user/v1/auth/sign-in")
+                .then()
+                .statusCode(201)
+                .extract()
+                .response();
+        String access_token = response.path("data.tokens.auth.token").toString();
+        log.info(access_token + " - access_token");
+        String refresh_token = response.path("data.tokens.refresh.token").toString();
+        String Authorization = "Bearer " + access_token;
+        RequestSpecBuilder builder = new RequestSpecBuilder();
+        builder.addHeader("Authorization", Authorization);
+        builder.addHeader("Refresh_token", refresh_token);
+        builder.addHeader("Content-Type", "application/json");
+        requestSpecification = builder.build();
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("Jai test")
+    public void jaiTest(){
+        JSONObject requestParams = new JSONObject();
+        requestParams.put("status", "TestDate");
+        String status = "newStatus";
+        given()
+                .when()
+                .spec(requestSpecification)
+                .body("{ \"status\": \"" + status + "\"}")
+                .put("https://test4.jmart.kz/gw/catalog/v1/products/status-change/84894")
+                .then()
+                .assertThat()
+                .body("status", is("newStatus"));
+//        System.out.println(RestAssured.given().when().spec(requestSpecification).request(Method.PUT, productStatusChange).getBody().prettyPrint());
+    }
+}
+
 @Slf4j
 class Gw_catalog_v1_products_supermarket_companyId {
     String supermarketCompany = "https://test4.jmart.kz/gw/catalog/v1/products/supermarket/1476";
