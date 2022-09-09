@@ -12,6 +12,7 @@ import io.restassured.http.Method;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import static io.restassured.RestAssured.*;
+import static org.hamcrest.core.Is.is;
 
 public class Catalog {
 }
@@ -480,7 +481,6 @@ class Gw_catalog_v1_features_variants_list {
     String featureVariantsList = "https://test4.jmart.kz/gw/catalog/v1/features/variants/list";
 
     @Autowired
-    private Configurations configurations;
     protected RequestSpecification requestSpecification;
 
     @BeforeEach
@@ -514,14 +514,14 @@ class Gw_catalog_v1_features_variants_list {
     @Test
     @Order(2)
     @DisplayName("Asserts that the feature variants list has a pagination.")
-    public void thereIsAPagination(){
+    public void hasPagination(){
         Assert.assertTrue(RestAssured.given().when().spec(requestSpecification).request(Method.GET, featureVariantsList).getBody().asString().contains("next_page"));
     }
 
     @Test
     @Order(3)
     @DisplayName("Asserts that the features list has a limit.")
-    public void thereIsALimit(){
+    public void hasLimit(){
         Assert.assertTrue(RestAssured.given().when().spec(requestSpecification).request(Method.GET, featureVariantsList).getBody().asString().contains("per_page"));
     }
 
@@ -529,12 +529,38 @@ class Gw_catalog_v1_features_variants_list {
     @Order(4)
     @DisplayName("Asserts that if the parameter is incorrect, the 400 error will occur")
     public void incorrectParameter() {
-        Assert.assertEquals(RestAssured.given().when().spec(requestSpecification).request(Method.GET, featureVariantsList + "/@#@&*").getStatusCode(), 404);
+        Assert.assertEquals(RestAssured.given().when().spec(requestSpecification).request(Method.GET, featureVariantsList + "?item=118103").getStatusCode(), 404);
+    } //200
+
+    @Test
+    @Order(5)
+    @DisplayName("Asserts that response has correct data for valid ID")
+    public void validIdCheckResponseData(){
+        ResponseBody body = RestAssured.given().when().spec(requestSpecification).request(Method.GET, featureVariantsList).getBody();
+        Assert.assertTrue(body.prettyPrint().contains("variant_id") && body.prettyPrint().contains("variant") && body.prettyPrint().contains("description")
+                && body.prettyPrint().contains("page_title") && body.prettyPrint().contains("meta_keywords") && body.prettyPrint().contains("meta_description")
+                && body.prettyPrint().contains("lang_code") && body.prettyPrint().contains("yml2_unit") && body.prettyPrint().contains("ab__custom_feature_variant_h1")
+                && body.prettyPrint().contains("ab__sf_seo_variant") && body.prettyPrint().contains("feature_id") && body.prettyPrint().contains("url")
+                && body.prettyPrint().contains("color") && body.prettyPrint().contains("position") && body.prettyPrint().contains("seo_name")
+                && body.prettyPrint().contains("seo_path"));
     }
+    @Test
+    @Order(6)
+    @DisplayName("Asserts that response has error 404 for ID that does not exist")
+    public void nonExistingIdCheckResponseData(){
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "?page=1&items_per_page=20&feature_id=18&variant_ids[]=-10000000").getStatusCode(), 404);
+    } //200
+    @Test
+    @Order(7)
+    @DisplayName("Asserts that the list of categories has error 404 for invalid ID")
+    public void inValidIdCheckResponseData(){
+        Assert.assertEquals(RestAssured.given().request(Method.GET, "?page=1&items_per_page=20&include_group=true&feature_ids[]=invalid").getStatusCode(), 404);
+    }//200
+
 }
 @Slf4j
 class Gw_catalog_v1_my_products_statusChange_id {
-    String statusChange = "https://test4.jmart.kz/gw/catalog/v1/my/products/status-change/342517/P";
+    String statusChange = "https://test4.jmart.kz/gw/catalog/v1/products/status-change/342517";
 
     @Autowired
     protected RequestSpecification requestSpecification;
@@ -558,14 +584,9 @@ class Gw_catalog_v1_my_products_statusChange_id {
         builder.addHeader("Content-Type", "application/json");
         requestSpecification = builder.build();
     }
-
-    @Test
-    @Order(1)
-    @DisplayName("Jai test")
-    public void jaiTest(){
-        System.out.println(RestAssured.given().when().spec(requestSpecification).request(Method.GET, statusChange).getBody().prettyPrint());
-    }
+    // cannot request put since the "https://test4.jmart.kz/gw/catalog/v1/my/products" endpoint has 403
 }
+
 @Slf4j
 class Gw_catalog_v1_products {
     String productsListing = "https://test4.jmart.kz/gw/catalog/v1/products";
@@ -602,14 +623,14 @@ class Gw_catalog_v1_products {
     @Test
     @Order(2)
     @DisplayName("Asserts that the products list has a pagination.")
-    public void thereIsAPagination(){
+    public void hasPagination(){
         Assert.assertTrue(RestAssured.given().when().spec(requestSpecification).request(Method.GET, productsListing + "?category_id=268").getBody().asString().contains("total_pages"));
     }
 
     @Test
     @Order(3)
     @DisplayName("Asserts that the products list has a limit.")
-    public void thereIsALimit(){
+    public void hasLimit(){
         Assert.assertTrue(RestAssured.given().when().spec(requestSpecification).request(Method.GET, productsListing + "?category_id=268").getBody().asString().contains("items_per_page"));
     }
 
@@ -619,6 +640,28 @@ class Gw_catalog_v1_products {
     public void incorrectParameter() {
         Assert.assertEquals(RestAssured.given().when().spec(requestSpecification).request(Method.GET, productsListing + "/@#@&*").getStatusCode(), 404);
     }
+
+    @Test
+    @Order(5)
+    @DisplayName("Asserts that response has correct data for valid ID")
+    public void validIdCheckResponseData(){
+        ResponseBody body = RestAssured.given().request(Method.GET, productsListing + "?category_id=268").getBody();
+        Assert.assertTrue(body.asString().contains("feature_id") && body.asString().contains("product_id") && body.asString().contains("variant_id")
+                && body.asString().contains("description") && body.asString().contains("variant") && body.asString().contains("value_int")
+                && body.asString().contains("value"));
+    }
+    @Test
+    @Order(6)
+    @DisplayName("Asserts that response has error 404 for ID that does not exist")
+    public void nonExistingIdCheckResponseData(){
+        Assert.assertEquals(RestAssured.given().request(Method.GET, productsListing + "?category_id=-1").getStatusCode(), 404);
+    } //200
+    @Test
+    @Order(7)
+    @DisplayName("Asserts that the list of categories has error 404 for invalid ID")
+    public void inValidIdCheckResponseData(){
+        Assert.assertEquals(RestAssured.given().request(Method.GET, productsListing + "?category_id=-*/-*").getStatusCode(), 404);
+    } //422
 }
 @Slf4j
 class Gw_catalog_v1_products_product_id {
@@ -701,6 +744,22 @@ class Gw_catalog_v1_products_by_codes {
         builder.addHeader("Content-Type", "application/json");
         requestSpecification = builder.build();
     }
+
+    @Test
+    @Order(1)
+    @DisplayName("Returns product list using product_id")
+    public void allFieldsAreCompletedWithValidData(){
+        given()
+                .when()
+                .spec(requestSpecification)
+                .body("{ \"product_id\": \"" + "3177149" + "\", \"company_id\": \"" + "311632" + "\"}")
+                .post("https://test4.jmart.kz/gw/catalog/v1/products/by_codes/3177149")
+                .then()
+                .assertThat()
+                .body("product_id", is("3177149"));
+    }
+
+
 }
 @Slf4j
 class Gw_catalog_v1_products_by_ids {

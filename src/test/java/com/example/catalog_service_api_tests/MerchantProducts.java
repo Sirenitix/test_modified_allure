@@ -48,11 +48,11 @@ class Gw_catalog_v1_my_products {
     public void notEmptyList(){
 //        Assert.assertNotNull(RestAssured.given().when().spec(requestSpecification).request(Method.GET, productsForMerchant).getBody());
         System.out.println(RestAssured.given().when().spec(requestSpecification).request(Method.GET, productsForMerchant).getBody().prettyPrint());
-    }
+    } //403
 }
 @Slf4j
 class Gw_catalog_v1_my_products_id {
-    String productsForMerchantById = "https://test4.jmart.kz/gw/catalog/v1/my/products/{id}";
+    String productsForMerchantById = "https://test4.jmart.kz/gw/catalog/v1/my/products/1";
 
     @Autowired
     protected RequestSpecification requestSpecification;
@@ -83,5 +83,5 @@ class Gw_catalog_v1_my_products_id {
     public void notEmptyList(){
 //        Assert.assertNotNull(RestAssured.given().when().spec(requestSpecification).request(Method.GET, productsForMerchant).getBody());
         System.out.println(RestAssured.given().when().spec(requestSpecification).request(Method.GET, productsForMerchantById).getBody().prettyPrint());
-    }
+    } // 403
 }
