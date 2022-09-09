@@ -29,6 +29,7 @@ public class VendorProductImportFile extends AbstractConfiguration{
     }
     @Test
     public void getImportFile() {
+//Normal request.
         given()
                 .when()
                 .spec(requestSpecification)
@@ -37,6 +38,8 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .then()
                 .assertThat()
                 .statusCode(200);
+
+//Non-authorized request.
         given()
                 .when()
                 .param("company_id", 1)
@@ -44,6 +47,8 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .then()
                 .assertThat()
                 .statusCode(401);
+
+//Only required params.
         given()
                 .when()
                 .spec(requestSpecification)
@@ -51,6 +56,8 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .then()
                 .assertThat()
                 .statusCode(200);
+
+//Next 2 tests with non-valid params.
         given()
                 .when()
                 .spec(requestSpecification)
@@ -58,15 +65,8 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .get("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
-        given()
-                .when()
-                .spec(requestSpecification)
-                .param("company_id", -25)
-                .get("/gw/catalog/v1/vendor-product-import-file")
-                .then()
-                .assertThat()
-                .statusCode(404);
+                .statusCode(500);
+
         given()
                 .when()
                 .spec(requestSpecification)
@@ -74,11 +74,22 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .get("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(404);
+                .statusCode(500);
 
+//Valid but non-exist ids, not sure what system need to show in this scenario.
+//        given()
+//                .when()
+//                .spec(requestSpecification)
+//                .param("company_id", -25)
+//                .get("/gw/catalog/v1/vendor-product-import-file")
+//                .then()
+//                .assertThat()
+//                .statusCode(500);
     }
     @Test
     public void postImportFile(){
+
+//Non-authorized request.
         given()
                 .when()
                 .body("{\n" +
@@ -89,6 +100,8 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .then()
                 .assertThat()
                 .statusCode(401);
+
+//Normal request.
         given()
                 .when()
                 .spec(requestSpecification)
@@ -100,6 +113,8 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .then()
                 .assertThat()
                 .statusCode(201);
+
+//Empty body request.
         given()
                 .when()
                 .spec(requestSpecification)
@@ -108,14 +123,18 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .post("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
+                .statusCode(500);
+
+//Request without body.
         given()
                 .when()
                 .spec(requestSpecification)
                 .post("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
+                .statusCode(500);
+
+//Next 4 test with non-valid params.
         given()
                 .when()
                 .spec(requestSpecification)
@@ -126,7 +145,7 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .post("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
+                .statusCode(500);
         given()
                 .when()
                 .spec(requestSpecification)
@@ -137,7 +156,7 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .post("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
+                .statusCode(500);
         given()
                 .when()
                 .spec(requestSpecification)
@@ -148,7 +167,7 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .post("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
+                .statusCode(500);
         given()
                 .when()
                 .spec(requestSpecification)
@@ -159,39 +178,43 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .post("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
+                .statusCode(500);
+
+//Valid but non-exist ids, not sure what system need to show in this scenario.
+//        given()
+//                .when()
+//                .spec(requestSpecification)
+//                .body("{\n" +
+//                        "  \"file_id\": -1,\n" +
+//                        "  \"company_id\": 0\n" +
+//                        "}")
+//                .post("/gw/catalog/v1/vendor-product-import-file")
+//                .then()
+//                .assertThat()
+//                .statusCode(500);
+//        given()
+//                .when()
+//                .spec(requestSpecification)
+//                .body("{\n" +
+//                        "  \"file_id\": 0,\n" +
+//                        "  \"company_id\": -1\n" +
+//                        "}")
+//                .post("/gw/catalog/v1/vendor-product-import-file")
+//                .then()
+//                .assertThat()
+//                .statusCode(500);
+
+//Next 2 tests with only one of the required params.
         given()
                 .when()
                 .spec(requestSpecification)
                 .body("{\n" +
-                        "  \"file_id\": -1,\n" +
                         "  \"company_id\": 0\n" +
                         "}")
                 .post("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
-        given()
-                .when()
-                .spec(requestSpecification)
-                .body("{\n" +
-                        "  \"file_id\": 0,\n" +
-                        "  \"company_id\": -1\n" +
-                        "}")
-                .post("/gw/catalog/v1/vendor-product-import-file")
-                .then()
-                .assertThat()
-                .statusCode(422);
-        given()
-                .when()
-                .spec(requestSpecification)
-                .body("{\n" +
-                        "  \"company_id\": 0\n" +
-                        "}")
-                .post("/gw/catalog/v1/vendor-product-import-file")
-                .then()
-                .assertThat()
-                .statusCode(422);
+                .statusCode(500);
         given()
                 .when()
                 .spec(requestSpecification)
@@ -201,10 +224,11 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .post("/gw/catalog/v1/vendor-product-import-file")
                 .then()
                 .assertThat()
-                .statusCode(422);
+                .statusCode(500);
     }
     @Test
     public void getImportFileById() {
+//Normal request.
         given()
                 .when()
                 .spec(requestSpecification)
@@ -213,6 +237,27 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .then()
                 .assertThat()
                 .statusCode(200);
+
+//Non-authorized request.
+        given()
+                .when()
+                .pathParam("id", 1)
+                .get("https://test4.jmart.kz/gw/catalog/v1/vendor-product-import-file/{id}")
+                .then()
+                .assertThat()
+                .statusCode(401);
+
+//Valid but not existed.
+        given()
+                .when()
+                .spec(requestSpecification)
+                .pathParam("id", -1)
+                .get("/gw/catalog/v1/vendor-product-import-file/{id}")
+                .then()
+                .assertThat()
+                .statusCode(500);
+
+//Next 2 tests with non-valid params.
         given()
                 .when()
                 .spec(requestSpecification)
@@ -221,14 +266,7 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .then()
                 .assertThat()
                 .statusCode(500);
-        given()
-                .when()
-                .spec(requestSpecification)
-                .pathParam("id", -1)
-                .get("/gw/catalog/v1/vendor-product-import-file/{id}")
-                .then()
-                .assertThat()
-                .statusCode(404);
+
         given()
                 .when()
                 .spec(requestSpecification)
@@ -236,78 +274,78 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .get("/gw/catalog/v1/vendor-product-import-file/{id}")
                 .then()
                 .assertThat()
-                .statusCode(404);
-        given()
-                .when()
-                .pathParam("id", 1)
-                .get("https://test4.jmart.kz/gw/catalog/v1/vendor-product-import-file/{id}")
-                .then()
-                .assertThat()
-                .statusCode(401);
+                .statusCode(500);
     }
     @Test
     public void getImportFileLast() {
-        //This endpoint only return 500.
+//Non-authorized request.
         given()
                 .when()
-                .spec(requestSpecification)
-                .param("Company_Id", -1)
-                .get("/gw/catalog/v1/vendor-product-import-file/last")
-                .then()
-                .assertThat()
-                .statusCode(500);
-        given()
-                .when()
-                .spec(requestSpecification)
-                .param("Company_Id", 2.5)
-                .get("/gw/catalog/v1/vendor-product-import-file/last")
-                .then()
-                .assertThat()
-                .statusCode(500);
-        given()
-                .when()
-                .spec(requestSpecification)
-                .param("Company_Id", "ahfgisahf")
-                .get("/gw/catalog/v1/vendor-product-import-file/last")
-                .then()
-                .assertThat()
-                .statusCode(500);
-        given()
-                .when()
-                .spec(requestSpecification)
-                .get("/gw/catalog/v1/vendor-product-import-file/last")
-                .then()
-                .assertThat()
-                .statusCode(500);
-        given()
-                .when()
-                .spec(requestSpecification)
-                .param("Company_Id", 1)
+                .param("Company-Id", 1)
                 .get("https://test4.jmart.kz/gw/catalog/v1/vendor-product-import-file/last")
                 .then()
                 .assertThat()
                 .statusCode(401);
+//Normal request.
+         given()
+                 .when()
+                 .spec(requestSpecification)
+                 .param("Company-Id", 1)
+                 .get("/gw/catalog/v1/vendor-product-import-file/last")
+                 .then()
+                 .assertThat()
+                 .statusCode(200);
+
+//Valid, but non-existed param.
         given()
                 .when()
                 .spec(requestSpecification)
-                .param("Company-Id", 1)
+                .param("Company-Id", -1)
                 .get("/gw/catalog/v1/vendor-product-import-file/last")
+                .then()
+                .assertThat()
+                .statusCode(500);
+
+//Next 2 tests with non-valid params.
+        given()
+                .when()
+                .spec(requestSpecification)
+                .param("Company-Id", 2.5)
+                .get("/gw/catalog/v1/vendor-product-import-file/last")
+                .then()
+                .assertThat()
+                .statusCode(500);
+        given()
+                .when()
+                .spec(requestSpecification)
+                .param("Company-Id", "ahfgisahf")
+                .get("/gw/catalog/v1/vendor-product-import-file/last")
+                .then()
+                .assertThat()
+                .statusCode(500);
+
+//Request without one of required param.
+        given()
+                .when()
+                .spec(requestSpecification)
+                .get("/gw/catalog/v1/vendor-product-import-file/last")
+                .then()
+                .assertThat()
+                .statusCode(500);
+    }
+    @Test
+    public void getImportFileLastById() {
+// Normal request.
+        given()
+                .when()
+                .spec(requestSpecification)
+                .pathParam("id", 0)
+                .get("/gw/catalog/v1/vendor-product-import-file/last/{id}}")
                 .then()
                 .assertThat()
                 .statusCode(200);
 
-    }
-    @Test
-    public void getImportFileLastById() {
-        //This endpoint only returns 404.
-        given()
-                .when()
-                .spec(requestSpecification)
-                .pathParam("id", 1)
-                .get("/gw/catalog/v1/vendor-product-import-file/last/{id}")
-                .then()
-                .assertThat()
-                .statusCode(200);
+//Next 2 tests with non-valid param.
         given()
                 .when()
                 .spec(requestSpecification)
@@ -316,14 +354,7 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .then()
                 .assertThat()
                 .statusCode(400);
-        given()
-                .when()
-                .spec(requestSpecification)
-                .pathParam("id", -1)
-                .get("/gw/catalog/v1/vendor-product-import-file/last/{id}")
-                .then()
-                .assertThat()
-                .statusCode(400);
+
         given()
                 .when()
                 .spec(requestSpecification)
@@ -331,7 +362,9 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .get("/gw/catalog/v1/vendor-product-import-file/last/{id}")
                 .then()
                 .assertThat()
-                .statusCode(400);
+                .statusCode(500);
+
+//Non-authorized request.
         given()
                 .when()
                 .pathParam("id", 1)
@@ -339,6 +372,16 @@ public class VendorProductImportFile extends AbstractConfiguration{
                 .then()
                 .assertThat()
                 .statusCode(401);
+
+//Valid but non-exist ids, not sure what system need to show in this scenario.
+//        given()
+//                .when()
+//                .spec(requestSpecification)
+//                .pathParam("id", -1)
+//                .get("/gw/catalog/v1/vendor-product-import-file/last/{id}")
+//                .then()
+//                .assertThat()
+//                .statusCode(400);
     }
 //    @Test
 //    public void getMyImportFileReport() {
